@@ -183,6 +183,7 @@
       </div>
       <div id="groupContent"></div>
       <div class="result-actions">
+        <button class="btn btn-csv" onclick="downloadHtml()" style="margin-right:8px;">📄 HTML 다운로드</button>
         <button class="btn btn-csv" onclick="downloadCsv()">📥 CSV 다운로드</button>
       </div>
     </div>
@@ -404,6 +405,16 @@ function renderGroupContent(idx) {
       </table>
     </div>
   `;
+}
+
+async function downloadHtml() {
+  const res = await fetch('/api/download-html');
+  if (!res.ok) { alert('다운로드 실패. 먼저 키워드를 추출하세요.'); return; }
+  const blob = await res.blob();
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'naver_keywords.html';
+  a.click();
 }
 
 async function downloadCsv() {
