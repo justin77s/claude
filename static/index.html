@@ -90,7 +90,7 @@
 <body>
 <div class="header">
   <h1>🔍 네이버 파워링크 키워드 추출기</h1>
-  <p>홈페이지 분석 + AI + 네이버 검색광고 API로 최적의 키워드를 추출하고 그룹핑합니다</p>
+  <p>홈페이지 분석 + 네이버 검색광고 API로 최적의 키워드를 추출하고 그룹핑합니다</p>
 </div>
 
 <div class="container">
@@ -114,7 +114,7 @@
 
     <div class="api-section" style="margin-top:18px;">
       <div class="api-section-title">
-        🔑 네이버 검색광고 API 설정 (검색량/경쟁강도 조회)
+        🔑 네이버 검색광고 API 설정 <span style="font-weight:400; color:#555;">(필수)</span>
         <span class="api-toggle" onclick="toggleApiHelp()">API 키 발급 방법</span>
       </div>
       <div id="apiHelp" style="display:none; background:#fffbf0; border:1px solid #ffe082; border-radius:6px; padding:10px; margin-bottom:12px; font-size:12px; color:#555; line-height:1.7;">
@@ -124,15 +124,15 @@
       </div>
       <div class="form-grid">
         <div class="form-group">
-          <label>고객 ID (Customer ID)</label>
+          <label>고객 ID (Customer ID) <span class="required">*</span></label>
           <input type="text" id="naverCustomerId" placeholder="숫자로 된 고객 ID" />
         </div>
         <div class="form-group">
-          <label>Access License</label>
+          <label>Access License <span class="required">*</span></label>
           <input type="text" id="naverAccessLicense" placeholder="액세스 라이선스 키" />
         </div>
         <div class="form-group full">
-          <label>Secret Key</label>
+          <label>Secret Key <span class="required">*</span></label>
           <input type="password" id="naverSecretKey" placeholder="시크릿 키" />
         </div>
       </div>
@@ -156,17 +156,12 @@
       <div class="step-connector" id="conn1"></div>
       <div class="step" id="step2">
         <div class="step-dot" id="dot2">2</div>
-        <div class="step-label" id="lbl2">AI 키워드 생성</div>
+        <div class="step-label" id="lbl2">키워드 조회</div>
       </div>
       <div class="step-connector" id="conn2"></div>
       <div class="step" id="step3">
         <div class="step-dot" id="dot3">3</div>
-        <div class="step-label" id="lbl3">검색량 조회</div>
-      </div>
-      <div class="step-connector" id="conn3"></div>
-      <div class="step" id="step4">
-        <div class="step-dot" id="dot4">4</div>
-        <div class="step-label" id="lbl4">그룹 분류</div>
+        <div class="step-label" id="lbl3">그룹 분류</div>
       </div>
     </div>
     <div class="spinner"></div>
@@ -222,14 +217,14 @@ function loadCredentials() {
 }
 
 function setStep(n) {
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= 3; i++) {
     const dot = document.getElementById('dot' + i);
     const lbl = document.getElementById('lbl' + i);
     if (i < n) {
       dot.className = 'step-dot done';
       dot.textContent = '✓';
       lbl.className = 'step-label';
-      if (i <= 3) document.getElementById('conn' + i).className = 'step-connector done';
+      if (i <= 2) document.getElementById('conn' + i).className = 'step-connector done';
     } else if (i === n) {
       dot.className = 'step-dot active';
       dot.textContent = i;
@@ -244,10 +239,9 @@ function setStep(n) {
 
 const stepMessages = [
   '',
-  '🌐 홈페이지를 크롤링하고 있습니다...',
-  '🤖 Claude AI가 키워드를 분석하고 있습니다. 잠시 기다려주세요...',
-  '📊 네이버 검색광고 API로 검색량을 조회하고 있습니다...',
-  '🗂️ 키워드를 광고 그룹별로 분류하고 있습니다...',
+  '홈페이지를 분석하고 있습니다...',
+  '네이버 검색광고 API로 연관 키워드와 검색량을 조회하고 있습니다...',
+  '키워드를 광고 그룹별로 분류하고 있습니다...',
 ];
 
 async function startExtract() {
@@ -265,19 +259,29 @@ async function startExtract() {
   setStep(1);
   document.getElementById('progressMsg').textContent = stepMessages[1];
 
+  const cid = document.getElementById('naverCustomerId').value.trim();
+  const lic = document.getElementById('naverAccessLicense').value.trim();
+  const sec = document.getElementById('naverSecretKey').value.trim();
+
+  if (!cid || !lic || !sec) {
+    alert('네이버 검색광고 API 키를 모두 입력하세요.');
+    document.getElementById('progressCard').classList.remove('show');
+    document.getElementById('formCard').style.display = 'block';
+    return;
+  }
+
   const payload = {
     homepage_url: url,
     main_keyword: keyword,
     brand_name: document.getElementById('brandName').value.trim(),
-    naver_customer_id: document.getElementById('naverCustomerId').value.trim() || null,
-    naver_access_license: document.getElementById('naverAccessLicense').value.trim() || null,
-    naver_secret_key: document.getElementById('naverSecretKey').value.trim() || null,
+    naver_customer_id: cid,
+    naver_access_license: lic,
+    naver_secret_key: sec,
   };
 
   // 진행 단계 시뮬레이션
   setTimeout(() => { setStep(2); document.getElementById('progressMsg').textContent = stepMessages[2]; }, 1500);
-  setTimeout(() => { setStep(3); document.getElementById('progressMsg').textContent = stepMessages[3]; }, 5000);
-  setTimeout(() => { setStep(4); document.getElementById('progressMsg').textContent = stepMessages[4]; }, 12000);
+  setTimeout(() => { setStep(3); document.getElementById('progressMsg').textContent = stepMessages[3]; }, 4000);
 
   try {
     const res = await fetch('/api/extract', {
@@ -311,9 +315,6 @@ function renderResults(data) {
   const alerts = [];
   if (!data.crawl_success) {
     alerts.push('<div class="alert alert-warning">⚠️ 홈페이지 크롤링에 실패했습니다. 메인 키워드 기반으로만 키워드를 생성했습니다.</div>');
-  }
-  if (!data.naver_api_used) {
-    alerts.push('<div class="alert alert-warning">⚠️ 네이버 API 연동 없이 키워드를 생성했습니다. API 키를 입력하면 검색량/경쟁강도를 확인할 수 있습니다.</div>');
   }
   document.getElementById('alertArea').innerHTML = alerts.join('');
 
@@ -419,12 +420,11 @@ function resetForm() {
   document.getElementById('resultsWrap').classList.remove('show');
   document.getElementById('formCard').style.display = 'block';
   document.getElementById('alertArea').innerHTML = '';
-  // 스텝 초기화
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= 3; i++) {
     document.getElementById('dot' + i).className = 'step-dot';
     document.getElementById('dot' + i).textContent = i;
     document.getElementById('lbl' + i).className = 'step-label';
-    if (i <= 3) document.getElementById('conn' + i).className = 'step-connector';
+    if (i <= 2) document.getElementById('conn' + i).className = 'step-connector';
   }
 }
 

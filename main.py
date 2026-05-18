@@ -10,10 +10,9 @@ from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from services.ai_analyzer import generate_keywords
 from services.crawler import crawl_homepage
 from services.keyword_grouper import group_keywords
-from services.naver_api import get_keyword_stats
+from services.naver_api import fetch_related_keywords
 
 load_dotenv()
 
@@ -34,10 +33,8 @@ class ExtractRequest(BaseModel):
     naver_customer_id: Optional[str] = None
     naver_access_license: Optional[str] = None
     naver_secret_key: Optional[str] = None
-    anthropic_api_key: Optional[str] = None
 
 
-# 마지막 결과 캐시 (단일 사용자 기준)
 _last_result: Optional[dict] = None
 
 
@@ -45,47 +42,55 @@ _last_result: Optional[dict] = None
 async def extract_keywords(req: ExtractRequest):
     global _last_result
 
-    # 1. 홈페이지 크롤링
-    homepage_data = await crawl_homepage(req.homepage_url)
-    if homepage_data.get("error"):
-        # 크롤링 실패해도 AI 분석은 진행
-        homepage_data["body_text"] = f"메인 키워드: {req.main_keyword}"
-
-    # 2. AI 키워드 생성
-    try:
-        anthropic_key = req.anthropic_api_key or os.getenv("ANTHROPIC_API_KEY")
-        keywords = await generate_keywords(homepage_data, req.main_keyword, anthropic_key)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"AI 키워드 생성 실패: {str(e)}")
-
-    if not keywords:
-        raise HTTPException(status_code=500, detail="키워드를 추출할 수 없습니다.")
-
-    # 3. 네이버 API 키워드 통계 조회
     customer_id = req.naver_customer_id or os.getenv("NAVER_CUSTOMER_ID", "")
     access_license = req.naver_access_license or os.getenv("NAVER_ACCESS_LICENSE", "")
     secret_key = req.naver_secret_key or os.getenv("NAVER_SECRET_KEY", "")
 
-    keyword_stats = {}
-    naver_api_used = False
+    if not (customer_id and access_license and secret_key):
+        raise HTTPException(status_code=400, detail="네이버 검색광고 API 키를 입력하세요.")
 
-    if customer_id and access_license and secret_key:
-        try:
-            keyword_stats = await get_keyword_stats(
-                keywords, customer_id, access_license, secret_key
-            )
-            naver_api_used = True
-        except Exception:
-            # API 실패 시 빈 통계로 계속
-            pass
+    # 1. 홈페이지 크롤링으로 추가 힌트 키워드 추출
+    hint_keywords = [req.main_keyword]
+    crawl_success = False
 
-    # 4. 키워드 그룹핑
+    homepage_data = await crawl_homepage(req.homepage_url)
+    if not homepage_data.get("error"):
+        crawl_success = True
+        # 헤딩에서 짧은 키워드 추출해 힌트로 활용
+        for heading in homepage_data.get("headings", [])[:5]:
+            if 2 <= len(heading) <= 15:
+                hint_keywords.append(heading)
+
+    # 중복 제거, 최대 10개 힌트
+    seen = set()
+    unique_hints = []
+    for kw in hint_keywords:
+        if kw not in seen:
+            seen.add(kw)
+            unique_hints.append(kw)
+        if len(unique_hints) >= 10:
+            break
+
+    # 2. 네이버 API로 연관 키워드 + 통계 한번에 조회
+    try:
+        keyword_stats = await fetch_related_keywords(
+            unique_hints, customer_id, access_license, secret_key
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"네이버 API 조회 실패: {str(e)}")
+
+    if not keyword_stats:
+        raise HTTPException(status_code=500, detail="키워드를 조회할 수 없습니다. API 키를 확인하세요.")
+
+    keywords = list(keyword_stats.keys())
+
+    # 3. 키워드 그룹핑
     groups = group_keywords(keywords, keyword_stats, req.main_keyword, req.brand_name or "")
 
     result = {
         "total_keywords": len(keywords),
-        "naver_api_used": naver_api_used,
-        "crawl_success": homepage_data.get("error") is None,
+        "naver_api_used": True,
+        "crawl_success": crawl_success,
         "site_title": homepage_data.get("title", ""),
         "groups": groups,
     }
@@ -127,9 +132,7 @@ async def download_csv():
     return StreamingResponse(
         io.BytesIO(content.encode("utf-8")),
         media_type="text/csv; charset=utf-8",
-        headers={
-            "Content-Disposition": "attachment; filename=naver_keywords.csv"
-        },
+        headers={"Content-Disposition": "attachment; filename=naver_keywords.csv"},
     )
 
 

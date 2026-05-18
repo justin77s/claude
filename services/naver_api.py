@@ -22,19 +22,19 @@ def _make_signature(timestamp: str, secret_key: str) -> str:
     return base64.b64encode(hash_bytes).decode("utf-8")
 
 
-async def get_keyword_stats(
-    keywords: list[str],
+async def fetch_related_keywords(
+    hint_keywords: list[str],
     customer_id: str,
     access_license: str,
     secret_key: str,
 ) -> dict[str, dict]:
-    """네이버 검색광고 API로 키워드 통계를 조회합니다."""
+    """네이버 키워드 도구 API로 연관 키워드와 통계를 한번에 조회합니다."""
     results = {}
 
-    # 5개씩 배치 처리
+    # 5개씩 배치 처리 (API 제한)
     batch_size = 5
-    for i in range(0, len(keywords), batch_size):
-        batch = keywords[i : i + batch_size]
+    for i in range(0, len(hint_keywords), batch_size):
+        batch = hint_keywords[i : i + batch_size]
 
         timestamp = str(int(time.time() * 1000))
         signature = _make_signature(timestamp, secret_key)
@@ -64,6 +64,8 @@ async def get_keyword_stats(
 
                 for item in data.get("keywordList", []):
                     kw = item.get("relKeyword", "")
+                    if not kw:
+                        continue
                     pc = int(item.get("monthlyPcQcCnt", 0) or 0)
                     mobile = int(item.get("monthlyMobileQcCnt", 0) or 0)
                     comp = item.get("compIdx", "UNKNOWN")
@@ -75,29 +77,10 @@ async def get_keyword_stats(
                         "competition": _normalize_competition(comp),
                     }
         except Exception:
-            # API 실패 시 해당 배치 건너뜀
-            for kw in batch:
-                if kw not in results:
-                    results[kw] = {
-                        "monthly_pc": 0,
-                        "monthly_mobile": 0,
-                        "monthly_total": 0,
-                        "competition": "UNKNOWN",
-                    }
+            pass
 
-        # 배치 간 딜레이
-        if i + batch_size < len(keywords):
+        if i + batch_size < len(hint_keywords):
             await asyncio.sleep(0.5)
-
-    # API에서 반환되지 않은 키워드는 기본값 추가
-    for kw in keywords:
-        if kw not in results:
-            results[kw] = {
-                "monthly_pc": 0,
-                "monthly_mobile": 0,
-                "monthly_total": 0,
-                "competition": "UNKNOWN",
-            }
 
     return results
 
