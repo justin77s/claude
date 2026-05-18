@@ -227,4 +227,5 @@ async def download_html():
     )
 
 
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+static_dir = os.environ.get("STATIC_DIR", "static")
+app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")
