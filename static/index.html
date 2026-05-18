@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>네이버 파워링크 키워드 추출기</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; background: #f5f6fa; color: #2d3436; min-height: 100vh; }
+  .header { background: linear-gradient(135deg, #03c75a 0%, #00a843 100%); color: white; padding: 24px 32px; box-shadow: 0 2px 8px rgba(3,199,90,0.3); }
+  .header h1 { font-size: 22px; font-weight: 700; }
+  .header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 28px 20px; }
+  .card { background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); padding: 28px; margin-bottom: 20px; }
+  .card h2 { font-size: 16px; font-weight: 700; margin-bottom: 18px; color: #1a1a2e; display: flex; align-items: center; gap: 8px; }
+  .card h2 .icon { font-size: 20px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-size: 13px; font-weight: 600; color: #555; }
+  label .required { color: #e84393; margin-left: 2px; }
+  input { border: 1.5px solid #e0e0e0; border-radius: 8px; padding: 10px 14px; font-size: 14px; transition: border-color 0.2s; outline: none; }
+  input:focus { border-color: #03c75a; box-shadow: 0 0 0 3px rgba(3,199,90,0.12); }
+  .api-section { background: #f8fffe; border: 1.5px solid #d0f0e0; border-radius: 10px; padding: 18px; margin-top: 6px; }
+  .api-section-title { font-size: 13px; font-weight: 700; color: #00a843; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .api-toggle { font-size: 12px; color: #03c75a; cursor: pointer; text-decoration: underline; margin-left: auto; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; }
+  .btn-primary { background: linear-gradient(135deg, #03c75a, #00a843); color: white; width: 100%; justify-content: center; margin-top: 18px; }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(3,199,90,0.4); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-csv { background: #fff; color: #03c75a; border: 2px solid #03c75a; padding: 8px 18px; font-size: 14px; border-radius: 8px; }
+  .btn-csv:hover { background: #03c75a; color: white; }
+
+  /* Progress */
+  .progress-wrap { display: none; text-align: center; padding: 30px; }
+  .progress-wrap.show { display: block; }
+  .progress-steps { display: flex; justify-content: center; gap: 0; margin-bottom: 24px; }
+  .step { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; max-width: 140px; }
+  .step-dot { width: 36px; height: 36px; border-radius: 50%; background: #e0e0e0; color: #999; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: all 0.4s; position: relative; z-index: 1; }
+  .step-dot.active { background: #03c75a; color: white; box-shadow: 0 0 0 4px rgba(3,199,90,0.2); }
+  .step-dot.done { background: #00a843; color: white; }
+  .step-label { font-size: 11px; color: #999; text-align: center; }
+  .step-label.active { color: #03c75a; font-weight: 700; }
+  .step-connector { height: 2px; background: #e0e0e0; flex: 1; margin-top: 18px; }
+  .step-connector.done { background: #03c75a; }
+  .spinner { width: 48px; height: 48px; border: 4px solid #e0e0e0; border-top-color: #03c75a; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 14px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .progress-msg { font-size: 14px; color: #666; }
+
+  /* Results */
+  .results-wrap { display: none; }
+  .results-wrap.show { display: block; }
+  .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+  .summary-item { background: white; border-radius: 10px; padding: 16px 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #03c75a; }
+  .summary-item .num { font-size: 28px; font-weight: 800; color: #03c75a; }
+  .summary-item .lbl { font-size: 12px; color: #888; margin-top: 2px; }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 0; }
+  .tab { padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1.5px solid #e0e0e0; background: white; color: #666; transition: all 0.2s; }
+  .tab.active { background: #03c75a; color: white; border-color: #03c75a; }
+  .tab-badge { display: inline-block; background: rgba(255,255,255,0.25); border-radius: 10px; font-size: 11px; padding: 0 6px; margin-left: 4px; }
+  .tab.active .tab-badge { background: rgba(255,255,255,0.25); }
+  .tab:not(.active) .tab-badge { background: #f0f0f0; color: #888; }
+  .group-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #f0f0f0; }
+  .group-header h3 { font-size: 15px; font-weight: 700; }
+  .group-meta { font-size: 12px; color: #888; }
+  .kw-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .kw-table th { background: #f8f9fa; font-weight: 700; color: #555; padding: 10px 14px; text-align: left; border-bottom: 2px solid #e9ecef; }
+  .kw-table td { padding: 9px 14px; border-bottom: 1px solid #f5f5f5; vertical-align: middle; }
+  .kw-table tr:hover td { background: #fafffe; }
+  .kw-name { font-weight: 600; color: #1a1a2e; }
+  .comp-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+  .comp-LOW { background: #d4edda; color: #155724; }
+  .comp-MEDIUM { background: #fff3cd; color: #856404; }
+  .comp-HIGH { background: #f8d7da; color: #721c24; }
+  .comp-UNKNOWN { background: #e9ecef; color: #666; }
+  .search-num { font-family: 'SF Mono', monospace; color: #2d3436; }
+  .bid-tag { font-size: 11px; color: #03c75a; font-weight: 600; }
+  .empty-group { text-align: center; padding: 30px; color: #aaa; font-size: 13px; }
+  .result-actions { display: flex; justify-content: flex-end; padding: 14px 20px; border-top: 1px solid #f0f0f0; }
+  .alert { padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 14px; }
+  .alert-warning { background: #fff8e1; border: 1px solid #ffe082; color: #795548; }
+  .alert-error { background: #ffebee; border: 1px solid #ef9a9a; color: #b71c1c; }
+  .alert-success { background: #e8f5e9; border: 1px solid #a5d6a7; color: #1b5e20; }
+  @media (max-width: 700px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .summary-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🔍 네이버 파워링크 키워드 추출기</h1>
+  <p>홈페이지 분석 + AI + 네이버 검색광고 API로 최적의 키워드를 추출하고 그룹핑합니다</p>
+</div>
+
+<div class="container">
+  <!-- 입력 폼 -->
+  <div class="card" id="formCard">
+    <h2><span class="icon">📋</span> 기본 정보 입력</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>홈페이지 URL <span class="required">*</span></label>
+        <input type="url" id="homepageUrl" placeholder="https://example.com" />
+      </div>
+      <div class="form-group">
+        <label>메인 키워드 <span class="required">*</span></label>
+        <input type="text" id="mainKeyword" placeholder="예: 강남 헬스장, 온라인 쇼핑몰" />
+      </div>
+      <div class="form-group">
+        <label>브랜드명 / 상호명</label>
+        <input type="text" id="brandName" placeholder="예: 스타벅스, 쿠팡 (선택사항)" />
+      </div>
+    </div>
+
+    <div class="api-section" style="margin-top:18px;">
+      <div class="api-section-title">
+        🔑 네이버 검색광고 API 설정 (검색량/경쟁강도 조회)
+        <span class="api-toggle" onclick="toggleApiHelp()">API 키 발급 방법</span>
+      </div>
+      <div id="apiHelp" style="display:none; background:#fffbf0; border:1px solid #ffe082; border-radius:6px; padding:10px; margin-bottom:12px; font-size:12px; color:#555; line-height:1.7;">
+        1. <a href="https://searchad.naver.com" target="_blank">네이버 검색광고</a> 로그인<br>
+        2. 오른쪽 상단 계정명 클릭 → API 관리<br>
+        3. API 권한 신청 후 고객 ID, Access License, Secret Key 발급
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>고객 ID (Customer ID)</label>
+          <input type="text" id="naverCustomerId" placeholder="숫자로 된 고객 ID" />
+        </div>
+        <div class="form-group">
+          <label>Access License</label>
+          <input type="text" id="naverAccessLicense" placeholder="액세스 라이선스 키" />
+        </div>
+        <div class="form-group full">
+          <label>Secret Key</label>
+          <input type="password" id="naverSecretKey" placeholder="시크릿 키" />
+        </div>
+      </div>
+      <div style="font-size:11px; color:#888; margin-top:6px;">
+        ※ API 키는 브라우저 세션에만 임시 저장되며 서버에 영구 저장되지 않습니다.
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="extractBtn" onclick="startExtract()">
+      🚀 키워드 추출 시작
+    </button>
+  </div>
+
+  <!-- 진행 상태 -->
+  <div class="card progress-wrap" id="progressCard">
+    <div class="progress-steps">
+      <div class="step" id="step1">
+        <div class="step-dot" id="dot1">1</div>
+        <div class="step-label" id="lbl1">홈페이지 분석</div>
+      </div>
+      <div class="step-connector" id="conn1"></div>
+      <div class="step" id="step2">
+        <div class="step-dot" id="dot2">2</div>
+        <div class="step-label" id="lbl2">AI 키워드 생성</div>
+      </div>
+      <div class="step-connector" id="conn2"></div>
+      <div class="step" id="step3">
+        <div class="step-dot" id="dot3">3</div>
+        <div class="step-label" id="lbl3">검색량 조회</div>
+      </div>
+      <div class="step-connector" id="conn3"></div>
+      <div class="step" id="step4">
+        <div class="step-dot" id="dot4">4</div>
+        <div class="step-label" id="lbl4">그룹 분류</div>
+      </div>
+    </div>
+    <div class="spinner"></div>
+    <div class="progress-msg" id="progressMsg">홈페이지를 분석하고 있습니다...</div>
+  </div>
+
+  <!-- 결과 -->
+  <div class="results-wrap" id="resultsWrap">
+    <div id="alertArea"></div>
+
+    <div class="summary-grid" id="summaryGrid"></div>
+
+    <div class="card" style="padding:0; overflow:hidden;">
+      <div style="padding:18px 20px 12px; border-bottom:1px solid #f0f0f0; display:flex; align-items:center; justify-content:space-between;">
+        <h2 style="margin:0;">📊 키워드 그룹 분류 결과</h2>
+      </div>
+      <div style="padding:14px 20px 0;">
+        <div class="tabs" id="groupTabs"></div>
+      </div>
+      <div id="groupContent"></div>
+      <div class="result-actions">
+        <button class="btn btn-csv" onclick="downloadCsv()">📥 CSV 다운로드</button>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin-top:14px;">
+      <button class="btn" style="background:#f5f6fa; color:#555; border:1.5px solid #ddd;" onclick="resetForm()">
+        ↩ 새로운 키워드 추출
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentGroups = [];
+let activeTab = 0;
+
+function toggleApiHelp() {
+  const el = document.getElementById('apiHelp');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function saveCredentials() {
+  sessionStorage.setItem('naver_cid', document.getElementById('naverCustomerId').value);
+  sessionStorage.setItem('naver_key', document.getElementById('naverAccessLicense').value);
+  sessionStorage.setItem('naver_secret', document.getElementById('naverSecretKey').value);
+}
+
+function loadCredentials() {
+  document.getElementById('naverCustomerId').value = sessionStorage.getItem('naver_cid') || '';
+  document.getElementById('naverAccessLicense').value = sessionStorage.getItem('naver_key') || '';
+  document.getElementById('naverSecretKey').value = sessionStorage.getItem('naver_secret') || '';
+}
+
+function setStep(n) {
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById('dot' + i);
+    const lbl = document.getElementById('lbl' + i);
+    if (i < n) {
+      dot.className = 'step-dot done';
+      dot.textContent = '✓';
+      lbl.className = 'step-label';
+      if (i <= 3) document.getElementById('conn' + i).className = 'step-connector done';
+    } else if (i === n) {
+      dot.className = 'step-dot active';
+      dot.textContent = i;
+      lbl.className = 'step-label active';
+    } else {
+      dot.className = 'step-dot';
+      dot.textContent = i;
+      lbl.className = 'step-label';
+    }
+  }
+}
+
+const stepMessages = [
+  '',
+  '🌐 홈페이지를 크롤링하고 있습니다...',
+  '🤖 Claude AI가 키워드를 분석하고 있습니다. 잠시 기다려주세요...',
+  '📊 네이버 검색광고 API로 검색량을 조회하고 있습니다...',
+  '🗂️ 키워드를 광고 그룹별로 분류하고 있습니다...',
+];
+
+async function startExtract() {
+  const url = document.getElementById('homepageUrl').value.trim();
+  const keyword = document.getElementById('mainKeyword').value.trim();
+
+  if (!url) { alert('홈페이지 URL을 입력하세요.'); return; }
+  if (!keyword) { alert('메인 키워드를 입력하세요.'); return; }
+
+  saveCredentials();
+
+  document.getElementById('formCard').style.display = 'none';
+  document.getElementById('progressCard').classList.add('show');
+  document.getElementById('resultsWrap').classList.remove('show');
+  setStep(1);
+  document.getElementById('progressMsg').textContent = stepMessages[1];
+
+  const payload = {
+    homepage_url: url,
+    main_keyword: keyword,
+    brand_name: document.getElementById('brandName').value.trim(),
+    naver_customer_id: document.getElementById('naverCustomerId').value.trim() || null,
+    naver_access_license: document.getElementById('naverAccessLicense').value.trim() || null,
+    naver_secret_key: document.getElementById('naverSecretKey').value.trim() || null,
+  };
+
+  // 진행 단계 시뮬레이션
+  setTimeout(() => { setStep(2); document.getElementById('progressMsg').textContent = stepMessages[2]; }, 1500);
+  setTimeout(() => { setStep(3); document.getElementById('progressMsg').textContent = stepMessages[3]; }, 5000);
+  setTimeout(() => { setStep(4); document.getElementById('progressMsg').textContent = stepMessages[4]; }, 12000);
+
+  try {
+    const res = await fetch('/api/extract', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.detail || '서버 오류가 발생했습니다.');
+    }
+
+    document.getElementById('progressCard').classList.remove('show');
+    renderResults(data);
+  } catch (err) {
+    document.getElementById('progressCard').classList.remove('show');
+    document.getElementById('formCard').style.display = 'block';
+    document.getElementById('alertArea').innerHTML = `
+      <div class="alert alert-error">❌ 오류: ${err.message}</div>
+    `;
+    document.getElementById('resultsWrap').classList.add('show');
+  }
+}
+
+function renderResults(data) {
+  currentGroups = data.groups;
+  activeTab = 0;
+
+  const alerts = [];
+  if (!data.crawl_success) {
+    alerts.push('<div class="alert alert-warning">⚠️ 홈페이지 크롤링에 실패했습니다. 메인 키워드 기반으로만 키워드를 생성했습니다.</div>');
+  }
+  if (!data.naver_api_used) {
+    alerts.push('<div class="alert alert-warning">⚠️ 네이버 API 연동 없이 키워드를 생성했습니다. API 키를 입력하면 검색량/경쟁강도를 확인할 수 있습니다.</div>');
+  }
+  document.getElementById('alertArea').innerHTML = alerts.join('');
+
+  // 요약
+  const totalSearch = currentGroups.reduce((s, g) => s + g.keywords.reduce((ss, k) => ss + k.monthly_total, 0), 0);
+  const avgSearch = data.total_keywords > 0 ? Math.round(totalSearch / data.total_keywords) : 0;
+  document.getElementById('summaryGrid').innerHTML = `
+    <div class="summary-item">
+      <div class="num">${data.total_keywords}</div>
+      <div class="lbl">총 추출 키워드</div>
+    </div>
+    <div class="summary-item">
+      <div class="num">${currentGroups.filter(g => g.total_keywords > 0).length}</div>
+      <div class="lbl">키워드 그룹</div>
+    </div>
+    <div class="summary-item">
+      <div class="num">${totalSearch.toLocaleString()}</div>
+      <div class="lbl">총 월간검색수</div>
+    </div>
+    <div class="summary-item">
+      <div class="num">${avgSearch.toLocaleString()}</div>
+      <div class="lbl">평균 월간검색수</div>
+    </div>
+  `;
+
+  // 탭
+  const tabsEl = document.getElementById('groupTabs');
+  tabsEl.innerHTML = currentGroups.map((g, i) => `
+    <button class="tab ${i === 0 ? 'active' : ''}" onclick="switchTab(${i})">
+      ${g.group_name}
+      <span class="tab-badge">${g.total_keywords}</span>
+    </button>
+  `).join('');
+
+  renderGroupContent(0);
+  document.getElementById('resultsWrap').classList.add('show');
+}
+
+function switchTab(idx) {
+  activeTab = idx;
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.className = 'tab' + (i === idx ? ' active' : '');
+  });
+  renderGroupContent(idx);
+}
+
+const compLabel = { LOW: '낮음', MEDIUM: '중간', HIGH: '높음', UNKNOWN: '-' };
+
+function renderGroupContent(idx) {
+  const group = currentGroups[idx];
+  const el = document.getElementById('groupContent');
+
+  if (!group || group.total_keywords === 0) {
+    el.innerHTML = '<div class="empty-group">이 그룹에 해당하는 키워드가 없습니다.</div>';
+    return;
+  }
+
+  const rows = group.keywords.map(k => `
+    <tr>
+      <td><span class="kw-name">${k.keyword}</span></td>
+      <td class="search-num">${k.monthly_pc.toLocaleString()}</td>
+      <td class="search-num">${k.monthly_mobile.toLocaleString()}</td>
+      <td class="search-num"><strong>${k.monthly_total.toLocaleString()}</strong></td>
+      <td><span class="comp-badge comp-${k.competition}">${compLabel[k.competition] || '-'}</span></td>
+      <td><span class="bid-tag">${k.bid_strategy}</span></td>
+    </tr>
+  `).join('');
+
+  el.innerHTML = `
+    <div class="group-header">
+      <h3>${group.group_name}</h3>
+      <span class="group-meta">키워드 ${group.total_keywords}개 · 평균 월간검색 ${group.avg_monthly_search.toLocaleString()}회</span>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="kw-table">
+        <thead>
+          <tr>
+            <th>키워드</th>
+            <th>월간검색(PC)</th>
+            <th>월간검색(모바일)</th>
+            <th>합계</th>
+            <th>경쟁강도</th>
+            <th>입찰 전략</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+async function downloadCsv() {
+  const res = await fetch('/api/download-csv');
+  if (!res.ok) { alert('다운로드 실패. 먼저 키워드를 추출하세요.'); return; }
+  const blob = await res.blob();
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'naver_keywords.csv';
+  a.click();
+}
+
+function resetForm() {
+  document.getElementById('resultsWrap').classList.remove('show');
+  document.getElementById('formCard').style.display = 'block';
+  document.getElementById('alertArea').innerHTML = '';
+  // 스텝 초기화
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById('dot' + i).className = 'step-dot';
+    document.getElementById('dot' + i).textContent = i;
+    document.getElementById('lbl' + i).className = 'step-label';
+    if (i <= 3) document.getElementById('conn' + i).className = 'step-connector';
+  }
+}
+
+// 세션 저장 키 불러오기
+loadCredentials();
+</script>
+</body>
+</html>
