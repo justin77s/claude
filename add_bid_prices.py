@@ -25,6 +25,18 @@ import sys
 
 BID_HEADER = "입찰가"
 
+# 네이버 키워드 입찰가 일괄수정 업로드 양식의 고정 안내(1~5행) + 헤더(6행).
+# 빈 템플릿을 따로 올리지 않아도 -t 옵션으로 이 양식을 그대로 생성한다.
+BUILTIN_TEMPLATE = [
+    ["광고그룹ID 키워드ID 는 '광고다운로드' 파일에서 확인 할 수 있습니다.", "", "", ""],
+    ["키워드ID 기준으로 키워드 수정요청이 적용됩니다. 입찰가는 쉼표나 '원' 표시를 제외한 숫자만 입력해 주세요.", "", "", ""],
+    ["입찰가는 '키워드입찰가'로 저장되며 '기본입찰가'가 있더라도 수정된 '키워드입찰가'로 광고가 진행됩니다.", "", "", ""],
+    ["입력은 최대 만(10000)개까지 가능합니다.", "", "", ""],
+    ["[중요] 7행부터 입력값이 시스템에 반영됩니다. 1~6행을 삭제하지 마세요. 엑셀에서 저장시 CSV 파일형식을 꼭 확인하시기 바랍니다.", "", "", ""],
+    ["광고그룹ID (선택)", "키워드ID (필수)", "키워드 (선택)", "키워드입찰가 (필수,숫자만)"],
+]
+BUILTIN_TEMPLATE_HDR = 5  # 헤더 행 인덱스
+
 
 def read_rows(path):
     """(행 리스트, 인코딩) 을 반환한다. utf-8-sig 우선, 실패하면 cp949(엑셀 한글)."""
@@ -186,6 +198,8 @@ def main():
     parser = argparse.ArgumentParser(description="키워드 보고서 입찰가/키워드ID 매칭 도구")
     parser.add_argument("files", nargs="+", help="키워드보고서, 광고다운로드 (+ 선택: 업로드템플릿)")
     parser.add_argument("-o", "--output", help="출력 CSV 경로")
+    parser.add_argument("-t", "--template", action="store_true",
+                        help="빈 템플릿 없이 내장 양식으로 일괄수정 템플릿을 생성한다")
     args = parser.parse_args()
 
     files = {}
@@ -205,11 +219,16 @@ def main():
     _, ad_rows, ad_hdr, _ = files["ad"]
     lookup = build_ad_lookup(ad_rows, ad_hdr)
 
-    if "template" in files:
-        t_path, t_rows, t_hdr, t_enc = files["template"]
+    if "template" in files or args.template:
+        if "template" in files:
+            t_path, t_rows, t_hdr, t_enc = files["template"]
+            out_name = default_out(t_path, "_입력완료")
+        else:
+            t_rows, t_hdr, t_enc = BUILTIN_TEMPLATE, BUILTIN_TEMPLATE_HDR, "cp949"
+            out_name = default_out(rpt_path, "_입찰가일괄수정")
         out_rows, total, filled, misses = fill_template(t_rows, t_hdr, rpt_rows, rpt_hdr, lookup)
-        out_path = args.output or default_out(t_path, "_입력완료")
-        write_csv(out_path, out_rows, t_enc)  # 템플릿 원본 인코딩(보통 cp949) 유지
+        out_path = args.output or out_name
+        write_csv(out_path, out_rows, t_enc)  # 네이버 양식 인코딩(cp949) 유지
         print(f"출력(템플릿): {out_path}  (인코딩 {t_enc})")
         print(f"보고서 데이터행: {total}  템플릿 채움: {filled}  제외(키워드ID 없음): {total - filled}")
         label = "제외(키워드ID 없음) 목록"
