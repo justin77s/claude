@@ -144,7 +144,8 @@ def annotate_report(rows, header_idx, lookup):
     return out, total, matched, misses
 
 
-def fill_template(template_rows, t_hdr, report_rows, r_hdr, lookup):
+def fill_template(template_rows, t_hdr, report_rows, r_hdr, lookup, min_rank):
+    ci_rank = col_index(report_rows[r_hdr], "평균노출순위")
     header = template_rows[t_hdr]
     idx_grp = idx_kwid = idx_kw = idx_bid = None
     for i, c in enumerate(header):
@@ -163,14 +164,21 @@ def fill_template(template_rows, t_hdr, report_rows, r_hdr, lookup):
     out = list(template_rows[:t_hdr + 1])  # 안내+헤더(1~6행) 보존
     ncol = len(header)
     total = filled = 0
-    misses = []
-    for _, key in report_keys(report_rows, r_hdr):
+    excl_id, excl_rank = [], []
+    for row, key in report_keys(report_rows, r_hdr):
         if key is None:
             continue
         total += 1
+        try:
+            rank = float(row[ci_rank])
+        except (ValueError, IndexError):
+            rank = None
+        if rank is None or rank < min_rank:
+            excl_rank.append(key)  # 평균노출순위 조건 미달
+            continue
         info = lookup.get(key)
         if not info or not info["kwid"]:
-            misses.append(key)
+            excl_id.append(key)  # 키워드ID 없음
             continue
         new = [""] * ncol
         if idx_grp is not None:
@@ -181,7 +189,7 @@ def fill_template(template_rows, t_hdr, report_rows, r_hdr, lookup):
         new[idx_bid] = info["bid"]
         out.append(new)
         filled += 1
-    return out, total, filled, misses
+    return out, total, filled, excl_id, excl_rank
 
 
 def write_csv(path, rows, encoding):
@@ -194,12 +202,22 @@ def default_out(src_path, suffix):
     return os.path.join(os.path.dirname(src_path) or ".", f"{base}{suffix}.csv")
 
 
+def print_misses(label, keys):
+    if not keys:
+        return
+    print(f"{label}:")
+    for camp, grp, kw in keys:
+        print(f"  - {camp} / {grp} / {kw}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="키워드 보고서 입찰가/키워드ID 매칭 도구")
     parser.add_argument("files", nargs="+", help="키워드보고서, 광고다운로드 (+ 선택: 업로드템플릿)")
     parser.add_argument("-o", "--output", help="출력 CSV 경로")
     parser.add_argument("-t", "--template", action="store_true",
                         help="빈 템플릿 없이 내장 양식으로 일괄수정 템플릿을 생성한다")
+    parser.add_argument("--min-rank", type=float, default=1.1,
+                        help="템플릿에 넣을 평균노출순위 최소값(이상). 기본 1.1")
     args = parser.parse_args()
 
     files = {}
@@ -226,24 +244,22 @@ def main():
         else:
             t_rows, t_hdr, t_enc = BUILTIN_TEMPLATE, BUILTIN_TEMPLATE_HDR, "cp949"
             out_name = default_out(rpt_path, "_입찰가일괄수정")
-        out_rows, total, filled, misses = fill_template(t_rows, t_hdr, rpt_rows, rpt_hdr, lookup)
+        out_rows, total, filled, excl_id, excl_rank = fill_template(
+            t_rows, t_hdr, rpt_rows, rpt_hdr, lookup, args.min_rank)
         out_path = args.output or out_name
         write_csv(out_path, out_rows, t_enc)  # 네이버 양식 인코딩(cp949) 유지
         print(f"출력(템플릿): {out_path}  (인코딩 {t_enc})")
-        print(f"보고서 데이터행: {total}  템플릿 채움: {filled}  제외(키워드ID 없음): {total - filled}")
-        label = "제외(키워드ID 없음) 목록"
+        print(f"보고서 데이터행: {total}  템플릿 채움: {filled}"
+              f"  제외(순위<{args.min_rank}): {len(excl_rank)}  제외(키워드ID 없음): {len(excl_id)}")
+        print_misses(f"제외(평균노출순위 {args.min_rank} 미만) 목록", excl_rank)
+        print_misses("제외(키워드ID 없음) 목록", excl_id)
     else:
         out_rows, total, filled, misses = annotate_report(rpt_rows, rpt_hdr, lookup)
         out_path = args.output or default_out(rpt_path, "_입찰가추가")
         write_csv(out_path, out_rows, "utf-8-sig")
         print(f"출력: {out_path}")
         print(f"데이터행: {total}  입찰가채움: {filled}  빈칸: {total - filled}")
-        label = "미매칭(빈칸) 목록"
-
-    if misses:
-        print(f"{label}:")
-        for camp, grp, kw in misses:
-            print(f"  - {camp} / {grp} / {kw}")
+        print_misses("미매칭(빈칸) 목록", misses)
 
 
 if __name__ == "__main__":
