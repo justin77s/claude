@@ -3,44 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>딥블루 다이빙 | Deep Blue Diving</title>
+  <title>OK다이브 | 속초 천진해변 스쿠버다이빙</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --blue-dark: #0a1628;
-      --blue-mid: #0d3b6e;
-      --blue-accent: #1a8cff;
-      --teal: #00c9b1;
+      --blue-dark: #071525;
+      --blue-mid: #0b3060;
+      --blue-accent: #0077cc;
+      --teal: #00bfa5;
       --white: #ffffff;
-      --gray: #f4f6f9;
+      --gray: #f4f7fa;
       --text: #2c3e50;
     }
 
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-family: 'Segoe UI', 'Apple SD Gothic Neo', system-ui, sans-serif;
       color: var(--text);
-      line-height: 1.6;
+      line-height: 1.65;
     }
 
-    /* NAV */
+    /* ── NAV ── */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
-      z-index: 100;
+      z-index: 200;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.2rem 5%;
-      background: rgba(10, 22, 40, 0.85);
-      backdrop-filter: blur(8px);
+      padding: 1rem 6%;
+      background: rgba(7, 21, 37, 0.88);
+      backdrop-filter: blur(10px);
     }
 
     .logo {
-      font-size: 1.4rem;
-      font-weight: 700;
+      font-size: 1.5rem;
+      font-weight: 900;
       color: var(--white);
-      letter-spacing: 1px;
+      letter-spacing: 2px;
     }
 
     .logo span { color: var(--teal); }
@@ -52,466 +54,906 @@
     }
 
     nav ul a {
-      color: rgba(255,255,255,0.85);
+      color: rgba(255,255,255,0.8);
       text-decoration: none;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+      font-weight: 500;
       transition: color 0.2s;
     }
 
     nav ul a:hover { color: var(--teal); }
 
-    /* HERO */
+    .nav-cta {
+      background: var(--teal);
+      color: var(--blue-dark) !important;
+      padding: 0.45rem 1.1rem;
+      border-radius: 50px;
+      font-weight: 700 !important;
+    }
+
+    /* ── HERO ── */
     #hero {
       min-height: 100vh;
-      background:
-        linear-gradient(to bottom, rgba(10,22,40,0.6) 0%, rgba(13,59,110,0.5) 100%),
-        url('https://images.unsplash.com/photo-1682687982501-1e58ab814714?w=1600&q=80') center/cover no-repeat;
+      position: relative;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 0 1rem;
+      align-items: flex-start;
+      padding: 0 8%;
+      background:
+        linear-gradient(to right, rgba(7,21,37,0.85) 40%, rgba(7,21,37,0.3) 100%),
+        url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1800&q=80') center/cover no-repeat;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--teal);
+      color: var(--blue-dark);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 0.3rem 0.9rem;
+      border-radius: 50px;
+      margin-bottom: 1.2rem;
+      text-transform: uppercase;
     }
 
     #hero h1 {
-      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-size: clamp(2rem, 4.5vw, 3.8rem);
       color: var(--white);
-      font-weight: 800;
+      font-weight: 900;
       line-height: 1.2;
-      margin-bottom: 1rem;
+      margin-bottom: 1.2rem;
+      max-width: 600px;
     }
 
-    #hero h1 span { color: var(--teal); }
+    #hero h1 em {
+      font-style: normal;
+      color: var(--teal);
+    }
 
     #hero p {
-      font-size: 1.2rem;
-      color: rgba(255,255,255,0.85);
-      max-width: 560px;
-      margin-bottom: 2.5rem;
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.8);
+      max-width: 500px;
+      margin-bottom: 2.2rem;
     }
+
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
 
     .btn {
       display: inline-block;
-      padding: 0.9rem 2.2rem;
+      padding: 0.85rem 2rem;
       border-radius: 50px;
-      font-size: 1rem;
-      font-weight: 600;
+      font-size: 0.95rem;
+      font-weight: 700;
       text-decoration: none;
       transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      border: none;
     }
 
-    .btn-primary {
-      background: var(--teal);
-      color: var(--blue-dark);
+    .btn-primary { background: var(--teal); color: var(--blue-dark); }
+    .btn-outline { border: 2px solid rgba(255,255,255,0.7); color: var(--white); background: transparent; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.35); }
+
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 3.5rem;
     }
 
-    .btn-outline {
-      border: 2px solid var(--white);
-      color: var(--white);
-      margin-left: 1rem;
+    .stat { text-align: left; }
+
+    .stat-num {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--teal);
+      line-height: 1;
     }
 
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+    .stat-label {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.6);
+      margin-top: 0.2rem;
+    }
 
-    /* SECTION BASE */
-    section { padding: 5rem 5%; }
+    /* ── SECTION BASE ── */
+    section { padding: 5.5rem 6%; }
+
+    .section-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 0.6rem;
+    }
 
     .section-title {
-      text-align: center;
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      color: var(--blue-mid);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 800;
+      color: var(--blue-dark);
+      margin-bottom: 0.6rem;
     }
 
-    .section-sub {
-      text-align: center;
+    .section-desc {
       color: #666;
+      font-size: 1rem;
       margin-bottom: 3rem;
+      max-width: 560px;
     }
 
-    /* SERVICES */
+    .section-header { margin-bottom: 0; }
+
+    /* ── ABOUT ── */
+    #about {
+      background: var(--blue-dark);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    #about .section-title { color: var(--white); }
+    #about .section-desc { color: rgba(255,255,255,0.65); margin-bottom: 2rem; }
+
+    .about-img {
+      border-radius: 20px;
+      overflow: hidden;
+      height: 420px;
+      background:
+        url('https://images.unsplash.com/photo-1559827291-72ee739d0d9a?w=900&q=80') center/cover no-repeat;
+    }
+
+    .about-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .about-feat {
+      background: rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      color: rgba(255,255,255,0.85);
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+
+    .about-feat .fi { font-size: 1.3rem; }
+
+    /* ── SERVICES ── */
     #services { background: var(--gray); }
 
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.5rem;
-      max-width: 1100px;
-      margin: 0 auto;
+      gap: 1.4rem;
     }
 
     .card {
       background: var(--white);
-      border-radius: 16px;
-      padding: 2rem 1.5rem;
-      text-align: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
-      transition: transform 0.2s;
+      border-radius: 18px;
+      padding: 2rem 1.6rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      transition: transform 0.22s, box-shadow 0.22s;
+      border-top: 4px solid transparent;
     }
 
-    .card:hover { transform: translateY(-4px); }
-
-    .card-icon {
-      font-size: 2.8rem;
-      margin-bottom: 1rem;
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.11);
+      border-top-color: var(--teal);
     }
+
+    .card-icon { font-size: 2.6rem; margin-bottom: 1rem; }
 
     .card h3 {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
       color: var(--blue-mid);
     }
 
-    .card p { font-size: 0.92rem; color: #666; }
+    .card p { font-size: 0.88rem; color: #666; }
 
-    /* COURSES */
+    /* ── COURSES ── */
     #courses { background: var(--white); }
 
-    .course-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.5rem;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .course-card {
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-
-    .course-img {
-      height: 180px;
-      background: var(--blue-mid);
+    .tabs {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 4rem;
+      gap: 0.6rem;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
     }
 
-    .course-body { padding: 1.4rem; }
-
-    .badge {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 0.2rem 0.7rem;
+    .tab {
+      padding: 0.5rem 1.2rem;
       border-radius: 50px;
-      margin-bottom: 0.6rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border: 2px solid #ddd;
+      cursor: pointer;
+      color: #666;
+      background: transparent;
+      transition: all 0.2s;
     }
 
-    .badge-beginner { background: #e0f7f4; color: #00897b; }
-    .badge-advanced { background: #e3f0ff; color: #1a6fdb; }
-    .badge-pro { background: #fde8ff; color: #9c27b0; }
-
-    .course-body h3 { font-size: 1.1rem; margin-bottom: 0.4rem; color: var(--blue-dark); }
-    .course-body p { font-size: 0.9rem; color: #666; margin-bottom: 1rem; }
-
-    .price { font-size: 1.2rem; font-weight: 700; color: var(--blue-accent); }
-
-    /* GALLERY */
-    #gallery { background: var(--blue-dark); }
-    #gallery .section-title { color: var(--white); }
-    #gallery .section-sub { color: rgba(255,255,255,0.6); }
-
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(2, 180px);
-      gap: 0.8rem;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .gallery-item {
-      border-radius: 12px;
+    .tab.active, .tab:hover {
       background: var(--blue-mid);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3rem;
-      overflow: hidden;
-    }
-
-    .gallery-item.wide { grid-column: span 2; }
-
-    /* TESTIMONIALS */
-    #testimonials { background: var(--gray); }
-
-    .reviews {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.5rem;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .review {
-      background: var(--white);
-      border-radius: 16px;
-      padding: 1.8rem;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-    }
-
-    .stars { color: #f5a623; margin-bottom: 0.8rem; }
-
-    .review p { font-size: 0.95rem; color: #444; margin-bottom: 1rem; font-style: italic; }
-
-    .reviewer { font-weight: 700; font-size: 0.9rem; color: var(--blue-mid); }
-
-    /* CTA */
-    #cta {
-      background: linear-gradient(135deg, var(--blue-mid), var(--blue-accent));
-      text-align: center;
+      border-color: var(--blue-mid);
       color: var(--white);
     }
 
-    #cta h2 { font-size: 2rem; margin-bottom: 1rem; }
-    #cta p { font-size: 1.05rem; opacity: 0.9; margin-bottom: 2rem; }
-
-    /* CONTACT */
-    #contact { background: var(--white); }
-
-    .contact-grid {
+    .course-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-      max-width: 900px;
-      margin: 0 auto;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.6rem;
     }
 
-    .contact-info h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.2rem; color: var(--blue-mid); }
+    .course-card {
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.09);
+      transition: transform 0.22s;
+    }
 
-    .contact-item {
+    .course-card:hover { transform: translateY(-4px); }
+
+    .course-thumb {
+      height: 190px;
       display: flex;
-      align-items: flex-start;
-      gap: 0.8rem;
-      margin-bottom: 1rem;
-      font-size: 0.95rem;
+      align-items: center;
+      justify-content: center;
+      font-size: 4.5rem;
     }
 
-    .contact-item .icon { font-size: 1.2rem; }
+    .thumb-beginner { background: linear-gradient(135deg, #0d3b6e, #1a8cff); }
+    .thumb-advanced { background: linear-gradient(135deg, #006666, #00c9b1); }
+    .thumb-pro      { background: linear-gradient(135deg, #3a006f, #9c27b0); }
+    .thumb-fun      { background: linear-gradient(135deg, #1a3a00, #4caf50); }
 
-    form { display: flex; flex-direction: column; gap: 1rem; }
+    .course-body { padding: 1.5rem; }
 
-    form input, form textarea, form select {
-      padding: 0.8rem 1rem;
-      border: 1.5px solid #ddd;
-      border-radius: 8px;
-      font-size: 0.95rem;
+    .badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.22rem 0.7rem;
+      border-radius: 50px;
+      margin-bottom: 0.7rem;
+    }
+
+    .badge-b { background: #e0f0ff; color: #0055aa; }
+    .badge-a { background: #e0f7f4; color: #007a6a; }
+    .badge-p { background: #f3e0ff; color: #7b00a0; }
+    .badge-f { background: #e8f5e9; color: #2e7d32; }
+
+    .course-body h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      color: var(--blue-dark);
+    }
+
+    .course-body p { font-size: 0.88rem; color: #666; margin-bottom: 1rem; }
+
+    .course-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .price { font-size: 1.25rem; font-weight: 800; color: var(--blue-accent); }
+    .price span { font-size: 0.8rem; font-weight: 400; color: #999; }
+
+    .course-duration {
+      font-size: 0.8rem;
+      color: #888;
+      background: var(--gray);
+      padding: 0.2rem 0.7rem;
+      border-radius: 50px;
+    }
+
+    /* ── POINTS ── */
+    #points {
+      background: linear-gradient(160deg, var(--blue-dark) 0%, var(--blue-mid) 100%);
+    }
+
+    #points .section-title { color: var(--white); }
+    #points .section-desc { color: rgba(255,255,255,0.6); }
+
+    .points-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .point-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 1.8rem 1.5rem;
+      color: var(--white);
+      transition: background 0.2s;
+    }
+
+    .point-card:hover { background: rgba(255,255,255,0.12); }
+
+    .point-icon { font-size: 2.2rem; margin-bottom: 1rem; }
+
+    .point-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .point-card p { font-size: 0.85rem; color: rgba(255,255,255,0.65); }
+
+    /* ── GALLERY ── */
+    #gallery { background: var(--gray); }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, 200px);
+      gap: 0.8rem;
+    }
+
+    .g-item {
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      background: var(--blue-mid);
+      transition: transform 0.2s;
+    }
+
+    .g-item:hover { transform: scale(1.02); }
+    .g-item.tall { grid-row: span 2; }
+    .g-item.wide { grid-column: span 2; }
+
+    /* ── REVIEW ── */
+    #reviews { background: var(--white); }
+
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.4rem;
+    }
+
+    .review-card {
+      background: var(--gray);
+      border-radius: 16px;
+      padding: 1.8rem;
+    }
+
+    .stars { color: #f5a623; margin-bottom: 0.8rem; font-size: 1rem; }
+
+    .review-text {
+      font-size: 0.92rem;
+      color: #444;
+      font-style: italic;
+      margin-bottom: 1.2rem;
+      line-height: 1.7;
+    }
+
+    .reviewer-info { display: flex; align-items: center; gap: 0.8rem; }
+
+    .avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--blue-mid);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .reviewer-name { font-weight: 700; font-size: 0.9rem; color: var(--blue-mid); }
+    .reviewer-course { font-size: 0.78rem; color: #999; }
+
+    /* ── CTA ── */
+    #cta {
+      background: var(--teal);
+      text-align: center;
+      padding: 5rem 6%;
+    }
+
+    #cta h2 { font-size: 2rem; font-weight: 900; color: var(--blue-dark); margin-bottom: 0.8rem; }
+    #cta p { font-size: 1.05rem; color: rgba(7,21,37,0.75); margin-bottom: 2rem; }
+
+    .cta-btns { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+
+    .btn-dark { background: var(--blue-dark); color: var(--white); }
+    .btn-white { background: var(--white); color: var(--blue-dark); }
+
+    /* ── CONTACT ── */
+    #contact { background: var(--blue-dark); }
+
+    #contact .section-title { color: var(--white); }
+    #contact .section-desc { color: rgba(255,255,255,0.55); }
+
+    .contact-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .contact-info h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--teal);
+      margin-bottom: 1.5rem;
+    }
+
+    .info-item {
+      display: flex;
+      gap: 0.9rem;
+      margin-bottom: 1.1rem;
+      align-items: flex-start;
+    }
+
+    .info-icon { font-size: 1.1rem; margin-top: 0.05rem; flex-shrink: 0; }
+
+    .info-label {
+      font-size: 0.75rem;
+      color: var(--teal);
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 0.15rem;
+    }
+
+    .info-val { font-size: 0.92rem; color: rgba(255,255,255,0.8); }
+
+    .divider { border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 1.5rem 0; }
+
+    .sns-links { display: flex; gap: 0.8rem; margin-top: 1.5rem; }
+
+    .sns-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.8);
+      transition: background 0.2s;
+    }
+
+    .sns-btn:hover { background: rgba(255,255,255,0.16); }
+
+    form { display: flex; flex-direction: column; gap: 0.9rem; }
+
+    form input,
+    form select,
+    form textarea {
+      padding: 0.85rem 1.1rem;
+      border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.06);
+      color: var(--white);
+      font-size: 0.92rem;
       font-family: inherit;
       transition: border-color 0.2s;
     }
 
-    form input:focus, form textarea:focus, form select:focus {
+    form input::placeholder,
+    form textarea::placeholder { color: rgba(255,255,255,0.35); }
+
+    form select option { background: var(--blue-dark); color: var(--white); }
+
+    form input:focus,
+    form select:focus,
+    form textarea:focus {
       outline: none;
-      border-color: var(--blue-accent);
+      border-color: var(--teal);
     }
 
-    form textarea { resize: vertical; min-height: 120px; }
+    form textarea { resize: vertical; min-height: 110px; }
 
-    /* FOOTER */
+    /* ── FOOTER ── */
     footer {
-      background: var(--blue-dark);
-      color: rgba(255,255,255,0.6);
-      text-align: center;
-      padding: 2rem 5%;
-      font-size: 0.88rem;
+      background: #040e1a;
+      padding: 2rem 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
     }
 
-    footer span { color: var(--teal); }
+    footer .f-logo { font-size: 1.1rem; font-weight: 900; color: var(--white); letter-spacing: 2px; }
+    footer .f-logo span { color: var(--teal); }
+    footer p { font-size: 0.82rem; color: rgba(255,255,255,0.4); }
 
-    @media (max-width: 600px) {
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
       nav ul { display: none; }
-      .contact-grid { grid-template-columns: 1fr; }
-      .gallery-grid { grid-template-columns: 1fr 1fr; }
-      .gallery-item.wide { grid-column: span 1; }
-      .btn-outline { margin-left: 0; margin-top: 0.8rem; }
+
+      #about {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .about-img { height: 260px; }
+
+      .contact-wrap { grid-template-columns: 1fr; gap: 2.5rem; }
+
+      .gallery-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+      }
+
+      .g-item.tall { grid-row: span 1; }
+
+      footer { flex-direction: column; text-align: center; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav>
-    <div class="logo">DEEP<span>BLUE</span></div>
-    <ul>
-      <li><a href="#services">서비스</a></li>
-      <li><a href="#courses">코스</a></li>
-      <li><a href="#gallery">갤러리</a></li>
-      <li><a href="#contact">문의</a></li>
-    </ul>
-  </nav>
+<!-- NAV -->
+<nav>
+  <div class="logo">OK<span>DIVE</span></div>
+  <ul>
+    <li><a href="#about">소개</a></li>
+    <li><a href="#services">서비스</a></li>
+    <li><a href="#courses">코스</a></li>
+    <li><a href="#points">다이빙 포인트</a></li>
+    <li><a href="#reviews">후기</a></li>
+    <li><a href="#contact" class="nav-cta">예약하기</a></li>
+  </ul>
+</nav>
 
-  <!-- HERO -->
-  <section id="hero">
-    <h1>바다 속 새로운 세계로<br><span>함께 뛰어드세요</span></h1>
-    <p>제주도 최고의 다이빙 스팟에서 전문 강사와 함께하는 안전하고 특별한 수중 경험</p>
-    <div>
-      <a href="#courses" class="btn btn-primary">코스 보기</a>
-      <a href="#contact" class="btn btn-outline">무료 상담</a>
+<!-- HERO -->
+<section id="hero">
+  <span class="hero-badge">PADI Authorized Dive Center · 속초 천진해변</span>
+  <h1>서울에서 2시간,<br>바다 속 <em>또 다른 세상</em></h1>
+  <p>동해 최고의 시야를 자랑하는 천진해변에서<br>전문 강사진과 함께하는 안전한 스쿠버다이빙</p>
+  <div class="hero-btns">
+    <a href="#courses" class="btn btn-primary">코스 알아보기</a>
+    <a href="#contact" class="btn btn-outline">무료 상담 신청</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">500+</div>
+      <div class="stat-label">누적 수강생</div>
     </div>
-  </section>
-
-  <!-- SERVICES -->
-  <section id="services">
-    <h2 class="section-title">제공 서비스</h2>
-    <p class="section-sub">초보자부터 전문가까지, 모든 레벨을 위한 프로그램</p>
-    <div class="cards">
-      <div class="card">
-        <div class="card-icon">🤿</div>
-        <h3>체험 다이빙</h3>
-        <p>수영을 못해도 OK. 강사와 1:1로 바다 속을 탐험해보세요.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">🎓</div>
-        <h3>자격증 과정</h3>
-        <p>PADI 공인 강사의 체계적인 교육으로 라이센스 취득.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">🚢</div>
-        <h3>보트 다이빙</h3>
-        <p>전용 보트로 접근하는 비경 포인트 투어.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">📷</div>
-        <h3>수중 촬영</h3>
-        <p>전문 수중 카메라로 특별한 순간을 영상으로 남겨드립니다.</p>
-      </div>
+    <div class="stat">
+      <div class="stat-num">10+</div>
+      <div class="stat-label">다이빙 포인트</div>
     </div>
-  </section>
+    <div class="stat">
+      <div class="stat-num">PADI</div>
+      <div class="stat-label">공인 다이브센터</div>
+    </div>
+  </div>
+</section>
 
-  <!-- COURSES -->
-  <section id="courses">
-    <h2 class="section-title">인기 코스</h2>
-    <p class="section-sub">내 수준에 맞는 코스를 선택하세요</p>
-    <div class="course-list">
-      <div class="course-card">
-        <div class="course-img">🌊</div>
-        <div class="course-body">
-          <span class="badge badge-beginner">입문</span>
-          <h3>스킨스쿠버 체험</h3>
-          <p>이론 1시간 + 수중 체험 30분, 장비 일체 포함</p>
-          <div class="price">₩89,000</div>
+<!-- ABOUT -->
+<section id="about">
+  <div>
+    <span class="section-tag">About OK Dive</span>
+    <h2 class="section-title">왜 OK다이브인가요?</h2>
+    <p class="section-desc">속초 천진해변에 자리 잡은 OK다이브는 PADI 공인 강사진이 운영하는 전문 다이브센터입니다. 체험부터 테크니컬 다이빙까지, 안전하고 즐거운 수중 세계를 경험하세요.</p>
+    <div class="about-features">
+      <div class="about-feat"><span class="fi">🏅</span> PADI 공인 강사</div>
+      <div class="about-feat"><span class="fi">🚤</span> 전용 다이빙 보트</div>
+      <div class="about-feat"><span class="fi">🛁</span> 샤워·탈의 시설</div>
+      <div class="about-feat"><span class="fi">🍳</span> 공용 주방 완비</div>
+      <div class="about-feat"><span class="fi">🛏</span> 숙박 가능 (2F)</div>
+      <div class="about-feat"><span class="fi">🔧</span> 장비 렌탈·수리</div>
+    </div>
+  </div>
+  <div class="about-img"></div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <span class="section-tag">Services</span>
+  <h2 class="section-title">제공 서비스</h2>
+  <p class="section-desc">입문자부터 전문 다이버까지, 모든 레벨에 맞는 프로그램을 운영합니다.</p>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">🤿</div>
+      <h3>체험 다이빙</h3>
+      <p>수영 실력 무관. PADI 강사와 1:1로 동해 바다 속을 탐험해보세요.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎓</div>
+      <h3>자격증 과정</h3>
+      <p>오픈워터부터 다이브마스터까지 PADI 공인 체계적 교육.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚢</div>
+      <h3>보트 다이빙</h3>
+      <p>12인승 전용 보트로 접근하는 비경 포인트 펀다이빙.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌙</div>
+      <h3>야간 다이빙</h3>
+      <p>어둠 속 빛나는 야광생물과 함께하는 특별한 나이트 다이빙.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📷</div>
+      <h3>수중 촬영</h3>
+      <p>전문 수중 카메라로 소중한 순간을 영상으로 담아드립니다.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏕</div>
+      <h3>숙박 패키지</h3>
+      <p>다이빙 + 숙박 결합 패키지로 더욱 알차게 즐기세요.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES -->
+<section id="courses">
+  <span class="section-tag">Courses</span>
+  <h2 class="section-title">교육 코스</h2>
+  <p class="section-desc">PADI 공식 커리큘럼에 따른 단계별 다이버 교육 과정입니다.</p>
+  <div class="course-grid">
+    <div class="course-card">
+      <div class="course-thumb thumb-beginner">🌊</div>
+      <div class="course-body">
+        <span class="badge badge-b">입문</span>
+        <h3>스쿠버다이빙 체험</h3>
+        <p>이론 강습 1시간 + 얕은 수심 체험. 자격증 불필요, 장비 일체 포함.</p>
+        <div class="course-meta">
+          <div class="price">₩89,000 <span>/ 1인</span></div>
+          <div class="course-duration">반나절</div>
         </div>
-      </div>
-      <div class="course-card">
-        <div class="course-img">🐠</div>
-        <div class="course-body">
-          <span class="badge badge-advanced">중급</span>
-          <h3>PADI 오픈워터</h3>
-          <p>3일 과정, 이론·풀장·바다 실습 포함, 국제 자격증 발급</p>
-          <div class="price">₩380,000</div>
-        </div>
-      </div>
-      <div class="course-card">
-        <div class="course-img">🦈</div>
-        <div class="course-body">
-          <span class="badge badge-pro">전문</span>
-          <h3>어드밴스드 코스</h3>
-          <p>딥 다이빙·항법·야간 다이빙 등 5가지 스페셜티</p>
-          <div class="price">₩520,000</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- GALLERY -->
-  <section id="gallery">
-    <h2 class="section-title">갤러리</h2>
-    <p class="section-sub">딥블루와 함께한 특별한 순간들</p>
-    <div class="gallery-grid">
-      <div class="gallery-item wide">🐢</div>
-      <div class="gallery-item">🦑</div>
-      <div class="gallery-item">🐡</div>
-      <div class="gallery-item wide">🌺</div>
-      <div class="gallery-item">🐚</div>
-    </div>
-  </section>
-
-  <!-- TESTIMONIALS -->
-  <section id="testimonials">
-    <h2 class="section-title">수강생 후기</h2>
-    <p class="section-sub">실제 수강생들의 이야기</p>
-    <div class="reviews">
-      <div class="review">
-        <div class="stars">★★★★★</div>
-        <p>"물에 공포가 있었는데 강사님 덕분에 자신감이 생겼어요. 인생 최고의 경험입니다!"</p>
-        <div class="reviewer">김지수 — 오픈워터 수료</div>
-      </div>
-      <div class="review">
-        <div class="stars">★★★★★</div>
-        <p>"보트 투어에서 거북이를 만났어요. 장비도 최신이고 안전 관리가 정말 철저해요."</p>
-        <div class="reviewer">박민준 — 보트 다이빙</div>
-      </div>
-      <div class="review">
-        <div class="stars">★★★★☆</div>
-        <p>"수중 촬영 서비스 덕분에 영상으로 추억을 남겼어요. 가족 여행에 강력 추천!"</p>
-        <div class="reviewer">이유나 — 체험 다이빙</div>
       </div>
     </div>
-  </section>
-
-  <!-- CTA -->
-  <section id="cta">
-    <h2>지금 바로 시작하세요</h2>
-    <p>선착순 10명 신규 등록 시 장비 대여 무료 제공</p>
-    <a href="#contact" class="btn btn-primary">무료 상담 신청</a>
-  </section>
-
-  <!-- CONTACT -->
-  <section id="contact">
-    <h2 class="section-title">문의 & 예약</h2>
-    <p class="section-sub">궁금한 점은 언제든지 연락주세요</p>
-    <div class="contact-grid">
-      <div class="contact-info">
-        <h3>딥블루 다이빙 센터</h3>
-        <div class="contact-item">
-          <span class="icon">📍</span>
-          <span>제주특별자치도 서귀포시 색달동 해변로 123</span>
-        </div>
-        <div class="contact-item">
-          <span class="icon">📞</span>
-          <span>064-000-0000</span>
-        </div>
-        <div class="contact-item">
-          <span class="icon">✉️</span>
-          <span>hello@deepblue-dive.kr</span>
-        </div>
-        <div class="contact-item">
-          <span class="icon">🕘</span>
-          <span>매일 09:00 — 18:00 (연중무휴)</span>
-        </div>
-        <div class="contact-item">
-          <span class="icon">💬</span>
-          <span>카카오톡 채널: @딥블루다이빙</span>
+    <div class="course-card">
+      <div class="course-thumb thumb-beginner">🐠</div>
+      <div class="course-body">
+        <span class="badge badge-b">초급</span>
+        <h3>PADI 오픈워터</h3>
+        <p>이론·풀 실습·오픈워터 4회 다이빙 포함. 국제 자격증 발급.</p>
+        <div class="course-meta">
+          <div class="price">₩380,000 <span>/ 1인</span></div>
+          <div class="course-duration">2~3일</div>
         </div>
       </div>
-      <form>
-        <input type="text" placeholder="이름" />
-        <input type="tel" placeholder="연락처" />
-        <select>
-          <option value="">코스 선택</option>
-          <option>스킨스쿠버 체험</option>
-          <option>PADI 오픈워터</option>
-          <option>어드밴스드 코스</option>
-          <option>보트 다이빙</option>
-          <option>수중 촬영</option>
-        </select>
-        <textarea placeholder="문의 내용을 입력해주세요"></textarea>
-        <button type="submit" class="btn btn-primary" style="border:none;cursor:pointer;">상담 신청하기</button>
-      </form>
     </div>
-  </section>
+    <div class="course-card">
+      <div class="course-thumb thumb-advanced">🐡</div>
+      <div class="course-body">
+        <span class="badge badge-a">중급</span>
+        <h3>PADI 어드밴스드</h3>
+        <p>딥다이빙·수중항법 등 5가지 어드벤처 다이브 포함.</p>
+        <div class="course-meta">
+          <div class="price">₩420,000 <span>/ 1인</span></div>
+          <div class="course-duration">2일</div>
+        </div>
+      </div>
+    </div>
+    <div class="course-card">
+      <div class="course-thumb thumb-fun">🚤</div>
+      <div class="course-body">
+        <span class="badge badge-f">펀다이빙</span>
+        <h3>보트 펀다이빙</h3>
+        <p>오픈워터 이상 보유자. 보트로 이동하는 프리미엄 포인트 2탱크.</p>
+        <div class="course-meta">
+          <div class="price">₩120,000 <span>/ 2탱크</span></div>
+          <div class="course-duration">오전 반나절</div>
+        </div>
+      </div>
+    </div>
+    <div class="course-card">
+      <div class="course-thumb thumb-pro">🦈</div>
+      <div class="course-body">
+        <span class="badge badge-p">전문</span>
+        <h3>PADI 레스큐 다이버</h3>
+        <p>자기 관리 및 타 다이버 구조 기술 습득. 다이브마스터 전 필수.</p>
+        <div class="course-meta">
+          <div class="price">₩520,000 <span>/ 1인</span></div>
+          <div class="course-duration">3일</div>
+        </div>
+      </div>
+    </div>
+    <div class="course-card">
+      <div class="course-thumb thumb-pro">🏆</div>
+      <div class="course-body">
+        <span class="badge badge-p">프로</span>
+        <h3>PADI 다이브마스터</h3>
+        <p>전문 다이버의 첫 걸음. 다이빙 가이드 및 강습 보조 자격.</p>
+        <div class="course-meta">
+          <div class="price">별도 문의</div>
+          <div class="course-duration">장기 과정</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <!-- FOOTER -->
-  <footer>
-    <p>&copy; 2026 <span>DEEP BLUE DIVING</span>. All rights reserved. | PADI Authorized Dive Center</p>
-  </footer>
+<!-- POINTS -->
+<section id="points">
+  <span class="section-tag" style="color:var(--teal)">Dive Points</span>
+  <h2 class="section-title">주요 다이빙 포인트</h2>
+  <p class="section-desc">천진해변 인근의 다양한 수중 지형을 탐험하세요.</p>
+  <div class="points-grid">
+    <div class="point-card">
+      <div class="point-icon">🪸</div>
+      <h3>천진 암초대</h3>
+      <p>수심 5~18m, 다양한 암초와 해조류. 오픈워터 교육 최적 포인트.</p>
+    </div>
+    <div class="point-card">
+      <div class="point-icon">🏛</div>
+      <h3>수중 구조물</h3>
+      <p>어초 투하 구역. 다양한 어종이 서식하는 동해 최고의 펀다이빙 포인트.</p>
+    </div>
+    <div class="point-card">
+      <div class="point-icon">🌑</div>
+      <h3>야간 포인트</h3>
+      <p>해가 지면 빛나는 야광충과 문어, 오징어를 만날 수 있는 나이트 전용 포인트.</p>
+    </div>
+    <div class="point-card">
+      <div class="point-icon">🏔</div>
+      <h3>딥 포인트</h3>
+      <p>최대 수심 30m 이상의 어드밴스드 전용 포인트. 대형 어종 출몰 지역.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <span class="section-tag">Gallery</span>
+  <h2 class="section-title">OK다이브 갤러리</h2>
+  <p class="section-desc">다이버들이 직접 담아온 동해의 수중 세계</p>
+  <div class="gallery-grid">
+    <div class="g-item tall">🐙</div>
+    <div class="g-item">🐟</div>
+    <div class="g-item">🦀</div>
+    <div class="g-item wide">🪸</div>
+    <div class="g-item">🦑</div>
+    <div class="g-item">🐚</div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <span class="section-tag">Reviews</span>
+  <h2 class="section-title">수강생 후기</h2>
+  <p class="section-desc">OK다이브와 함께한 분들의 생생한 이야기</p>
+  <div class="review-grid">
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <p class="review-text">"서울에서 당일치기로 다녀왔는데 대만족! 강사님이 친절하게 설명해주셔서 물 공포증이 있는 저도 즐겁게 체험했어요."</p>
+      <div class="reviewer-info">
+        <div class="avatar">😊</div>
+        <div>
+          <div class="reviewer-name">김민지</div>
+          <div class="reviewer-course">체험 다이빙</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <p class="review-text">"오픈워터 취득 완료! 2박 3일 동안 숙박하면서 강습받았는데 시설도 좋고 밥도 해먹을 수 있어서 편했어요. 보트도 크고 안전해요."</p>
+      <div class="reviewer-info">
+        <div class="avatar">🤿</div>
+        <div>
+          <div class="reviewer-name">이재현</div>
+          <div class="reviewer-course">PADI 오픈워터 수료</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★☆</div>
+      <p class="review-text">"동해 시야가 이렇게 좋은지 몰랐어요. 펀다이빙 포인트가 다양하고 수중 생물이 풍부해서 매번 올 때마다 새로운 경험이에요."</p>
+      <div class="reviewer-info">
+        <div class="avatar">🌊</div>
+        <div>
+          <div class="reviewer-name">박수연</div>
+          <div class="reviewer-course">보트 펀다이빙</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <h2>지금 바로 예약하세요</h2>
+  <p>주말·성수기 예약 마감 빠릅니다. 온라인 예약 시 장비 대여 할인 혜택 제공.</p>
+  <div class="cta-btns">
+    <a href="#contact" class="btn btn-dark">예약 문의하기</a>
+    <a href="http://pf.kakao.com/_okdive" class="btn btn-white">카카오톡 채널</a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <span class="section-tag">Contact</span>
+  <h2 class="section-title">오시는 길 & 문의</h2>
+  <p class="section-desc">궁금한 점은 편하게 연락주세요. 빠르게 답변드리겠습니다.</p>
+  <div class="contact-wrap">
+    <div class="contact-info">
+      <h3>OK다이브 스쿠버다이빙</h3>
+      <div class="info-item">
+        <span class="info-icon">📍</span>
+        <div>
+          <div class="info-label">주소</div>
+          <div class="info-val">강원특별자치도 고성군 토성면 천진해변 일대<br><small style="color:rgba(255,255,255,0.4)">(서울 양양고속도로 이용 약 2시간)</small></div>
+        </div>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">📞</span>
+        <div>
+          <div class="info-label">전화</div>
+          <div class="info-val">okdive.kr에서 확인</div>
+        </div>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">🕘</span>
+        <div>
+          <div class="info-label">운영시간</div>
+          <div class="info-val">사전 예약제 운영 (연중 상담 가능)</div>
+        </div>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">🚗</span>
+        <div>
+          <div class="info-label">교통</div>
+          <div class="info-val">서울 → 양양고속도로 → 속초IC → 천진해변<br>속초 고속버스터미널에서 택시 이용 가능</div>
+        </div>
+      </div>
+      <hr class="divider" />
+      <div class="sns-links">
+        <a href="https://www.instagram.com/okdive_skinscuba/" class="sns-btn">📸 인스타그램</a>
+        <a href="https://www.youtube.com/channel/UCYzpWxGY1sh_C1sk04ELm7A" class="sns-btn">▶ 유튜브</a>
+      </div>
+    </div>
+    <form>
+      <input type="text" placeholder="이름" />
+      <input type="tel" placeholder="연락처 (010-0000-0000)" />
+      <input type="date" />
+      <select>
+        <option value="">희망 코스 선택</option>
+        <option>스쿠버다이빙 체험</option>
+        <option>PADI 오픈워터</option>
+        <option>PADI 어드밴스드</option>
+        <option>보트 펀다이빙</option>
+        <option>PADI 레스큐 다이버</option>
+        <option>PADI 다이브마스터</option>
+        <option>야간 다이빙</option>
+        <option>기타 문의</option>
+      </select>
+      <select>
+        <option value="">인원 수</option>
+        <option>1명</option>
+        <option>2명</option>
+        <option>3~4명</option>
+        <option>5명 이상</option>
+      </select>
+      <textarea placeholder="문의 사항을 자유롭게 입력해주세요 (장비 보유 여부, 숙박 필요 여부 등)"></textarea>
+      <button type="submit" class="btn btn-primary" style="width:100%;font-size:1rem;">예약 신청하기</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo">OK<span>DIVE</span></div>
+  <p>&copy; 2026 OK다이브 스쿠버다이빙. All rights reserved. | PADI Authorized Dive Center</p>
+  <p style="font-size:0.78rem;color:rgba(255,255,255,0.25)">가격 및 세부 정보는 실제 업체 정보로 업데이트 필요</p>
+</footer>
 
 </body>
 </html>
