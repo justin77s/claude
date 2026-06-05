@@ -1,959 +1,971 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OK다이브 | 속초 천진해변 스쿠버다이빙</title>
+
+  <!-- Tailwind CSS v4 CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            /* shadcn/ui semantic tokens — ocean palette */
+            background:  '#f8fafc',
+            foreground:  '#0f172a',
+            card:        '#ffffff',
+            'card-foreground': '#0f172a',
+            primary:     '#0369a1',          /* sky-700 */
+            'primary-foreground': '#f0f9ff',
+            secondary:   '#e0f2fe',          /* sky-100 */
+            'secondary-foreground': '#0c4a6e',
+            muted:       '#f1f5f9',
+            'muted-foreground': '#64748b',
+            accent:      '#06b6d4',          /* cyan-500 */
+            'accent-foreground': '#083344',
+            border:      '#e2e8f0',
+            ring:        '#0369a1',
+            /* brand extras */
+            ocean: {
+              950: '#030e1a',
+              900: '#071525',
+              800: '#0c1f35',
+              700: '#0f3460',
+              600: '#0f4c75',
+              500: '#1a6fa8',
+              400: '#2196c7',
+              300: '#38bdf8',
+              200: '#bae6fd',
+              100: '#e0f2fe',
+            },
+            teal: {
+              500: '#14b8a6',
+              400: '#2dd4bf',
+              300: '#5eead4',
+            },
+          },
+          fontFamily: {
+            sans: ['Pretendard', 'system-ui', 'sans-serif'],
+          },
+          borderRadius: {
+            sm: '0.375rem',
+            md: '0.5rem',
+            lg: '0.75rem',
+            xl: '1rem',
+            '2xl': '1.25rem',
+            '3xl': '1.5rem',
+          },
+          boxShadow: {
+            card: '0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.07)',
+            'card-hover': '0 4px 12px rgba(0,0,0,.08), 0 12px 32px rgba(0,0,0,.10)',
+            'glow-teal': '0 0 24px rgba(20,184,166,.35)',
+          },
+        },
+      },
+    }
+  </script>
+
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Pretendard', system-ui, sans-serif; }
 
-    :root {
-      --blue-dark: #071525;
-      --blue-mid: #0b3060;
-      --blue-accent: #0077cc;
-      --teal: #00bfa5;
-      --white: #ffffff;
-      --gray: #f4f7fa;
-      --text: #2c3e50;
+    /* shadcn/ui-style ring focus */
+    *:focus-visible {
+      outline: 2px solid #0369a1;
+      outline-offset: 2px;
     }
 
-    html { scroll-behavior: smooth; }
+    /* Smooth scroll offset for fixed nav */
+    :target { scroll-margin-top: 72px; }
 
-    body {
-      font-family: 'Segoe UI', 'Apple SD Gothic Neo', system-ui, sans-serif;
-      color: var(--text);
-      line-height: 1.65;
-    }
-
-    /* ── NAV ── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 200;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 6%;
-      background: rgba(7, 21, 37, 0.88);
-      backdrop-filter: blur(10px);
-    }
-
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 900;
-      color: var(--white);
-      letter-spacing: 2px;
-    }
-
-    .logo span { color: var(--teal); }
-
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 2rem;
-    }
-
-    nav ul a {
-      color: rgba(255,255,255,0.8);
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: color 0.2s;
-    }
-
-    nav ul a:hover { color: var(--teal); }
-
-    .nav-cta {
-      background: var(--teal);
-      color: var(--blue-dark) !important;
-      padding: 0.45rem 1.1rem;
-      border-radius: 50px;
-      font-weight: 700 !important;
-    }
-
-    /* ── HERO ── */
+    /* Hero parallax-lite */
     #hero {
-      min-height: 100vh;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 0 8%;
-      background:
-        linear-gradient(to right, rgba(7,21,37,0.85) 40%, rgba(7,21,37,0.3) 100%),
-        url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1800&q=80') center/cover no-repeat;
+      background-image:
+        linear-gradient(160deg, rgba(3,14,26,.82) 0%, rgba(15,52,96,.65) 60%, rgba(6,182,212,.18) 100%),
+        url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1800&q=85');
+      background-size: cover;
+      background-position: center 30%;
     }
 
-    .hero-badge {
-      display: inline-block;
-      background: var(--teal);
-      color: var(--blue-dark);
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      padding: 0.3rem 0.9rem;
-      border-radius: 50px;
-      margin-bottom: 1.2rem;
-      text-transform: uppercase;
-    }
+    /* Card hover lift */
+    .card-lift { transition: transform .22s ease, box-shadow .22s ease; }
+    .card-lift:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,.12); }
 
-    #hero h1 {
-      font-size: clamp(2rem, 4.5vw, 3.8rem);
-      color: var(--white);
-      font-weight: 900;
-      line-height: 1.2;
-      margin-bottom: 1.2rem;
-      max-width: 600px;
-    }
-
-    #hero h1 em {
-      font-style: normal;
-      color: var(--teal);
-    }
-
-    #hero p {
-      font-size: 1.1rem;
-      color: rgba(255,255,255,0.8);
-      max-width: 500px;
-      margin-bottom: 2.2rem;
-    }
-
-    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
-
-    .btn {
-      display: inline-block;
-      padding: 0.85rem 2rem;
-      border-radius: 50px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      text-decoration: none;
-      transition: transform 0.2s, box-shadow 0.2s;
-      cursor: pointer;
-      border: none;
-    }
-
-    .btn-primary { background: var(--teal); color: var(--blue-dark); }
-    .btn-outline { border: 2px solid rgba(255,255,255,0.7); color: var(--white); background: transparent; }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.35); }
-
-    .hero-stats {
-      display: flex;
-      gap: 2.5rem;
-      margin-top: 3.5rem;
-    }
-
-    .stat { text-align: left; }
-
-    .stat-num {
-      font-size: 2rem;
-      font-weight: 900;
-      color: var(--teal);
-      line-height: 1;
-    }
-
-    .stat-label {
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.6);
-      margin-top: 0.2rem;
-    }
-
-    /* ── SECTION BASE ── */
-    section { padding: 5.5rem 6%; }
-
-    .section-tag {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--teal);
-      margin-bottom: 0.6rem;
-    }
-
-    .section-title {
-      font-size: clamp(1.6rem, 3vw, 2.2rem);
-      font-weight: 800;
-      color: var(--blue-dark);
-      margin-bottom: 0.6rem;
-    }
-
-    .section-desc {
-      color: #666;
-      font-size: 1rem;
-      margin-bottom: 3rem;
-      max-width: 560px;
-    }
-
-    .section-header { margin-bottom: 0; }
-
-    /* ── ABOUT ── */
-    #about {
-      background: var(--blue-dark);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
-    }
-
-    #about .section-title { color: var(--white); }
-    #about .section-desc { color: rgba(255,255,255,0.65); margin-bottom: 2rem; }
-
-    .about-img {
-      border-radius: 20px;
-      overflow: hidden;
-      height: 420px;
-      background:
-        url('https://images.unsplash.com/photo-1559827291-72ee739d0d9a?w=900&q=80') center/cover no-repeat;
-    }
-
-    .about-features {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-
-    .about-feat {
-      background: rgba(255,255,255,0.06);
-      border-radius: 12px;
-      padding: 1rem 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      color: rgba(255,255,255,0.85);
-      font-size: 0.88rem;
-      font-weight: 500;
-    }
-
-    .about-feat .fi { font-size: 1.3rem; }
-
-    /* ── SERVICES ── */
-    #services { background: var(--gray); }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.4rem;
-    }
-
-    .card {
-      background: var(--white);
-      border-radius: 18px;
-      padding: 2rem 1.6rem;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-      transition: transform 0.22s, box-shadow 0.22s;
-      border-top: 4px solid transparent;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 32px rgba(0,0,0,0.11);
-      border-top-color: var(--teal);
-    }
-
-    .card-icon { font-size: 2.6rem; margin-bottom: 1rem; }
-
-    .card h3 {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      color: var(--blue-mid);
-    }
-
-    .card p { font-size: 0.88rem; color: #666; }
-
-    /* ── COURSES ── */
-    #courses { background: var(--white); }
-
-    .tabs {
-      display: flex;
-      gap: 0.6rem;
-      margin-bottom: 2.5rem;
-      flex-wrap: wrap;
-    }
-
-    .tab {
-      padding: 0.5rem 1.2rem;
-      border-radius: 50px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      border: 2px solid #ddd;
-      cursor: pointer;
-      color: #666;
-      background: transparent;
-      transition: all 0.2s;
-    }
-
-    .tab.active, .tab:hover {
-      background: var(--blue-mid);
-      border-color: var(--blue-mid);
-      color: var(--white);
-    }
-
-    .course-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.6rem;
-    }
-
-    .course-card {
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.09);
-      transition: transform 0.22s;
-    }
-
-    .course-card:hover { transform: translateY(-4px); }
-
-    .course-thumb {
-      height: 190px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 4.5rem;
-    }
-
-    .thumb-beginner { background: linear-gradient(135deg, #0d3b6e, #1a8cff); }
-    .thumb-advanced { background: linear-gradient(135deg, #006666, #00c9b1); }
-    .thumb-pro      { background: linear-gradient(135deg, #3a006f, #9c27b0); }
-    .thumb-fun      { background: linear-gradient(135deg, #1a3a00, #4caf50); }
-
-    .course-body { padding: 1.5rem; }
-
+    /* Badge */
     .badge {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 0.22rem 0.7rem;
-      border-radius: 50px;
-      margin-bottom: 0.7rem;
-    }
-
-    .badge-b { background: #e0f0ff; color: #0055aa; }
-    .badge-a { background: #e0f7f4; color: #007a6a; }
-    .badge-p { background: #f3e0ff; color: #7b00a0; }
-    .badge-f { background: #e8f5e9; color: #2e7d32; }
-
-    .course-body h3 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 0.4rem;
-      color: var(--blue-dark);
-    }
-
-    .course-body p { font-size: 0.88rem; color: #666; margin-bottom: 1rem; }
-
-    .course-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .price { font-size: 1.25rem; font-weight: 800; color: var(--blue-accent); }
-    .price span { font-size: 0.8rem; font-weight: 400; color: #999; }
-
-    .course-duration {
-      font-size: 0.8rem;
-      color: #888;
-      background: var(--gray);
-      padding: 0.2rem 0.7rem;
-      border-radius: 50px;
-    }
-
-    /* ── POINTS ── */
-    #points {
-      background: linear-gradient(160deg, var(--blue-dark) 0%, var(--blue-mid) 100%);
-    }
-
-    #points .section-title { color: var(--white); }
-    #points .section-desc { color: rgba(255,255,255,0.6); }
-
-    .points-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.2rem;
-    }
-
-    .point-card {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
-      padding: 1.8rem 1.5rem;
-      color: var(--white);
-      transition: background 0.2s;
-    }
-
-    .point-card:hover { background: rgba(255,255,255,0.12); }
-
-    .point-icon { font-size: 2.2rem; margin-bottom: 1rem; }
-
-    .point-card h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 0.4rem;
-    }
-
-    .point-card p { font-size: 0.85rem; color: rgba(255,255,255,0.65); }
-
-    /* ── GALLERY ── */
-    #gallery { background: var(--gray); }
-
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(2, 200px);
-      gap: 0.8rem;
-    }
-
-    .g-item {
-      border-radius: 14px;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3.5rem;
-      background: var(--blue-mid);
-      transition: transform 0.2s;
-    }
-
-    .g-item:hover { transform: scale(1.02); }
-    .g-item.tall { grid-row: span 2; }
-    .g-item.wide { grid-column: span 2; }
-
-    /* ── REVIEW ── */
-    #reviews { background: var(--white); }
-
-    .review-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.4rem;
-    }
-
-    .review-card {
-      background: var(--gray);
-      border-radius: 16px;
-      padding: 1.8rem;
-    }
-
-    .stars { color: #f5a623; margin-bottom: 0.8rem; font-size: 1rem; }
-
-    .review-text {
-      font-size: 0.92rem;
-      color: #444;
-      font-style: italic;
-      margin-bottom: 1.2rem;
-      line-height: 1.7;
-    }
-
-    .reviewer-info { display: flex; align-items: center; gap: 0.8rem; }
-
-    .avatar {
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      background: var(--blue-mid);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-    }
-
-    .reviewer-name { font-weight: 700; font-size: 0.9rem; color: var(--blue-mid); }
-    .reviewer-course { font-size: 0.78rem; color: #999; }
-
-    /* ── CTA ── */
-    #cta {
-      background: var(--teal);
-      text-align: center;
-      padding: 5rem 6%;
-    }
-
-    #cta h2 { font-size: 2rem; font-weight: 900; color: var(--blue-dark); margin-bottom: 0.8rem; }
-    #cta p { font-size: 1.05rem; color: rgba(7,21,37,0.75); margin-bottom: 2rem; }
-
-    .cta-btns { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
-
-    .btn-dark { background: var(--blue-dark); color: var(--white); }
-    .btn-white { background: var(--white); color: var(--blue-dark); }
-
-    /* ── CONTACT ── */
-    #contact { background: var(--blue-dark); }
-
-    #contact .section-title { color: var(--white); }
-    #contact .section-desc { color: rgba(255,255,255,0.55); }
-
-    .contact-wrap {
-      display: grid;
-      grid-template-columns: 1fr 1.2fr;
-      gap: 4rem;
-      align-items: start;
-    }
-
-    .contact-info h3 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--teal);
-      margin-bottom: 1.5rem;
-    }
-
-    .info-item {
-      display: flex;
-      gap: 0.9rem;
-      margin-bottom: 1.1rem;
-      align-items: flex-start;
-    }
-
-    .info-icon { font-size: 1.1rem; margin-top: 0.05rem; flex-shrink: 0; }
-
-    .info-label {
-      font-size: 0.75rem;
-      color: var(--teal);
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 0.15rem;
-    }
-
-    .info-val { font-size: 0.92rem; color: rgba(255,255,255,0.8); }
-
-    .divider { border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 1.5rem 0; }
-
-    .sns-links { display: flex; gap: 0.8rem; margin-top: 1.5rem; }
-
-    .sns-btn {
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      padding: 0.5rem 1rem;
-      border-radius: 50px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      text-decoration: none;
-      background: rgba(255,255,255,0.08);
-      color: rgba(255,255,255,0.8);
-      transition: background 0.2s;
+      gap: 4px;
+      padding: 2px 10px;
+      border-radius: 9999px;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .04em;
     }
 
-    .sns-btn:hover { background: rgba(255,255,255,0.16); }
+    /* Divider */
+    .divider { border: none; border-top: 1px solid #e2e8f0; }
 
-    form { display: flex; flex-direction: column; gap: 0.9rem; }
-
-    form input,
-    form select,
-    form textarea {
-      padding: 0.85rem 1.1rem;
-      border: 1.5px solid rgba(255,255,255,0.1);
-      border-radius: 10px;
-      background: rgba(255,255,255,0.06);
-      color: var(--white);
-      font-size: 0.92rem;
-      font-family: inherit;
-      transition: border-color 0.2s;
+    /* Gradient text */
+    .grad-text {
+      background: linear-gradient(90deg, #38bdf8, #2dd4bf);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
-    form input::placeholder,
-    form textarea::placeholder { color: rgba(255,255,255,0.35); }
+    /* Nav scroll effect via JS toggle */
+    nav.scrolled {
+      background: rgba(3,14,26,.95) !important;
+      box-shadow: 0 1px 0 rgba(255,255,255,.06);
+    }
 
-    form select option { background: var(--blue-dark); color: var(--white); }
+    /* Shimmer loader placeholder (gallery) */
+    .shimmer {
+      background: linear-gradient(110deg, #1e3a52 30%, #2a5070 50%, #1e3a52 70%);
+      background-size: 200% 100%;
+      animation: shimmer 1.6s linear infinite;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
 
-    form input:focus,
-    form select:focus,
-    form textarea:focus {
+    /* Smooth input */
+    input, textarea, select {
+      transition: border-color .18s, box-shadow .18s;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: #0369a1 !important;
+      box-shadow: 0 0 0 3px rgba(3,105,161,.15);
       outline: none;
-      border-color: var(--teal);
-    }
-
-    form textarea { resize: vertical; min-height: 110px; }
-
-    /* ── FOOTER ── */
-    footer {
-      background: #040e1a;
-      padding: 2rem 6%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    footer .f-logo { font-size: 1.1rem; font-weight: 900; color: var(--white); letter-spacing: 2px; }
-    footer .f-logo span { color: var(--teal); }
-    footer p { font-size: 0.82rem; color: rgba(255,255,255,0.4); }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 768px) {
-      nav ul { display: none; }
-
-      #about {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-
-      .about-img { height: 260px; }
-
-      .contact-wrap { grid-template-columns: 1fr; gap: 2.5rem; }
-
-      .gallery-grid {
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto;
-      }
-
-      .g-item.tall { grid-row: span 1; }
-
-      footer { flex-direction: column; text-align: center; }
     }
   </style>
 </head>
-<body>
+<body class="bg-background text-foreground antialiased">
 
-<!-- NAV -->
-<nav>
-  <div class="logo">OK<span>DIVE</span></div>
-  <ul>
-    <li><a href="#about">소개</a></li>
-    <li><a href="#services">서비스</a></li>
-    <li><a href="#courses">코스</a></li>
-    <li><a href="#points">다이빙 포인트</a></li>
-    <li><a href="#reviews">후기</a></li>
-    <li><a href="#contact" class="nav-cta">예약하기</a></li>
-  </ul>
+<!-- ─── NAV ─────────────────────────────────────────── -->
+<nav id="navbar" class="fixed top-0 inset-x-0 z-50 transition-all duration-300 bg-ocean-950/80 backdrop-blur-md">
+  <div class="max-w-6xl mx-auto px-6 h-[68px] flex items-center justify-between gap-8">
+
+    <!-- Logo -->
+    <a href="#hero" class="flex items-center gap-2 shrink-0">
+      <div class="w-8 h-8 rounded-lg bg-teal-500 flex items-center justify-center">
+        <i data-lucide="waves" class="w-4 h-4 text-ocean-950"></i>
+      </div>
+      <span class="text-white font-black text-lg tracking-tight">OK<span class="text-teal-400">DIVE</span></span>
+    </a>
+
+    <!-- Desktop menu -->
+    <ul class="hidden md:flex items-center gap-1 text-sm font-medium">
+      <li><a href="#about"    class="px-3 py-1.5 rounded-md text-white/70 hover:text-white hover:bg-white/8 transition-colors">소개</a></li>
+      <li><a href="#services" class="px-3 py-1.5 rounded-md text-white/70 hover:text-white hover:bg-white/8 transition-colors">서비스</a></li>
+      <li><a href="#courses"  class="px-3 py-1.5 rounded-md text-white/70 hover:text-white hover:bg-white/8 transition-colors">코스</a></li>
+      <li><a href="#points"   class="px-3 py-1.5 rounded-md text-white/70 hover:text-white hover:bg-white/8 transition-colors">포인트</a></li>
+      <li><a href="#reviews"  class="px-3 py-1.5 rounded-md text-white/70 hover:text-white hover:bg-white/8 transition-colors">후기</a></li>
+    </ul>
+
+    <!-- CTA -->
+    <a href="#contact"
+       class="hidden md:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 text-ocean-950 font-bold text-sm transition-colors shadow-glow-teal">
+      <i data-lucide="calendar-check" class="w-4 h-4"></i>
+      예약하기
+    </a>
+
+    <!-- Mobile hamburger -->
+    <button id="menu-btn" class="md:hidden p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/8">
+      <i data-lucide="menu" class="w-5 h-5"></i>
+    </button>
+  </div>
+
+  <!-- Mobile drawer -->
+  <div id="mobile-menu" class="hidden md:hidden border-t border-white/10 bg-ocean-950/95 px-6 pb-4">
+    <ul class="flex flex-col gap-1 pt-3 text-sm font-medium">
+      <li><a href="#about"    class="block px-3 py-2 rounded-lg text-white/75 hover:text-white hover:bg-white/8">소개</a></li>
+      <li><a href="#services" class="block px-3 py-2 rounded-lg text-white/75 hover:text-white hover:bg-white/8">서비스</a></li>
+      <li><a href="#courses"  class="block px-3 py-2 rounded-lg text-white/75 hover:text-white hover:bg-white/8">코스</a></li>
+      <li><a href="#points"   class="block px-3 py-2 rounded-lg text-white/75 hover:text-white hover:bg-white/8">포인트</a></li>
+      <li><a href="#reviews"  class="block px-3 py-2 rounded-lg text-white/75 hover:text-white hover:bg-white/8">후기</a></li>
+      <li class="pt-2">
+        <a href="#contact" class="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-teal-500 text-ocean-950 font-bold">
+          <i data-lucide="calendar-check" class="w-4 h-4"></i>예약하기
+        </a>
+      </li>
+    </ul>
+  </div>
 </nav>
 
-<!-- HERO -->
-<section id="hero">
-  <span class="hero-badge">PADI Authorized Dive Center · 속초 천진해변</span>
-  <h1>서울에서 2시간,<br>바다 속 <em>또 다른 세상</em></h1>
-  <p>동해 최고의 시야를 자랑하는 천진해변에서<br>전문 강사진과 함께하는 안전한 스쿠버다이빙</p>
-  <div class="hero-btns">
-    <a href="#courses" class="btn btn-primary">코스 알아보기</a>
-    <a href="#contact" class="btn btn-outline">무료 상담 신청</a>
+
+<!-- ─── HERO ─────────────────────────────────────────── -->
+<section id="hero" class="min-h-screen flex flex-col justify-center pt-[68px]">
+  <div class="max-w-6xl mx-auto px-6 py-24 md:py-32">
+
+    <!-- Eyebrow badge -->
+    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/15 border border-teal-500/30 text-teal-300 text-xs font-semibold mb-6">
+      <i data-lucide="badge-check" class="w-3.5 h-3.5"></i>
+      PADI Authorized Dive Center · 강원 고성 천진해변
+    </div>
+
+    <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.12] mb-5 max-w-2xl">
+      서울에서 2시간,<br>
+      바다 속 <span class="grad-text">또 다른 세상</span>
+    </h1>
+    <p class="text-lg text-white/65 max-w-lg mb-8 leading-relaxed">
+      동해 최고의 시야를 자랑하는 천진해변에서<br class="hidden sm:block">
+      PADI 공인 강사진과 함께하는 안전하고 특별한 다이빙
+    </p>
+
+    <!-- CTA buttons -->
+    <div class="flex flex-wrap gap-3 mb-16">
+      <a href="#courses"
+         class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-teal-500 hover:bg-teal-400 text-ocean-950 font-bold transition-all shadow-glow-teal hover:shadow-lg hover:-translate-y-0.5">
+        <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+        코스 알아보기
+      </a>
+      <a href="#contact"
+         class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-white/25 hover:border-white/50 text-white font-semibold backdrop-blur-sm transition-all hover:-translate-y-0.5">
+        <i data-lucide="phone" class="w-4 h-4"></i>
+        무료 상담
+      </a>
+    </div>
+
+    <!-- Stats row -->
+    <div class="flex flex-wrap gap-8">
+      <div>
+        <div class="text-3xl font-black text-teal-400">500<span class="text-xl">+</span></div>
+        <div class="text-xs text-white/50 mt-0.5">누적 수강생</div>
+      </div>
+      <div class="w-px bg-white/10"></div>
+      <div>
+        <div class="text-3xl font-black text-teal-400">10<span class="text-xl">+</span></div>
+        <div class="text-xs text-white/50 mt-0.5">다이빙 포인트</div>
+      </div>
+      <div class="w-px bg-white/10"></div>
+      <div>
+        <div class="text-3xl font-black text-teal-400">PADI</div>
+        <div class="text-xs text-white/50 mt-0.5">공인 다이브센터</div>
+      </div>
+      <div class="w-px bg-white/10"></div>
+      <div>
+        <div class="text-3xl font-black text-teal-400">4.9<span class="text-xl">★</span></div>
+        <div class="text-xs text-white/50 mt-0.5">평균 만족도</div>
+      </div>
+    </div>
   </div>
-  <div class="hero-stats">
-    <div class="stat">
-      <div class="stat-num">500+</div>
-      <div class="stat-label">누적 수강생</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">10+</div>
-      <div class="stat-label">다이빙 포인트</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">PADI</div>
-      <div class="stat-label">공인 다이브센터</div>
-    </div>
+
+  <!-- Wave divider -->
+  <div class="relative -mb-1">
+    <svg viewBox="0 0 1440 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 56L60 46.7C120 37.3 240 18.7 360 14C480 9.3 600 18.7 720 28C840 37.3 960 46.7 1080 46.7C1200 46.7 1320 37.3 1380 32.7L1440 28V56H1380C1320 56 1200 56 1080 56C960 56 840 56 720 56C600 56 480 56 360 56C240 56 120 56 60 56H0Z" fill="#f8fafc"/>
+    </svg>
   </div>
 </section>
 
-<!-- ABOUT -->
-<section id="about">
-  <div>
-    <span class="section-tag">About OK Dive</span>
-    <h2 class="section-title">왜 OK다이브인가요?</h2>
-    <p class="section-desc">속초 천진해변에 자리 잡은 OK다이브는 PADI 공인 강사진이 운영하는 전문 다이브센터입니다. 체험부터 테크니컬 다이빙까지, 안전하고 즐거운 수중 세계를 경험하세요.</p>
-    <div class="about-features">
-      <div class="about-feat"><span class="fi">🏅</span> PADI 공인 강사</div>
-      <div class="about-feat"><span class="fi">🚤</span> 전용 다이빙 보트</div>
-      <div class="about-feat"><span class="fi">🛁</span> 샤워·탈의 시설</div>
-      <div class="about-feat"><span class="fi">🍳</span> 공용 주방 완비</div>
-      <div class="about-feat"><span class="fi">🛏</span> 숙박 가능 (2F)</div>
-      <div class="about-feat"><span class="fi">🔧</span> 장비 렌탈·수리</div>
-    </div>
-  </div>
-  <div class="about-img"></div>
-</section>
 
-<!-- SERVICES -->
-<section id="services">
-  <span class="section-tag">Services</span>
-  <h2 class="section-title">제공 서비스</h2>
-  <p class="section-desc">입문자부터 전문 다이버까지, 모든 레벨에 맞는 프로그램을 운영합니다.</p>
-  <div class="cards">
-    <div class="card">
-      <div class="card-icon">🤿</div>
-      <h3>체험 다이빙</h3>
-      <p>수영 실력 무관. PADI 강사와 1:1로 동해 바다 속을 탐험해보세요.</p>
-    </div>
-    <div class="card">
-      <div class="card-icon">🎓</div>
-      <h3>자격증 과정</h3>
-      <p>오픈워터부터 다이브마스터까지 PADI 공인 체계적 교육.</p>
-    </div>
-    <div class="card">
-      <div class="card-icon">🚢</div>
-      <h3>보트 다이빙</h3>
-      <p>12인승 전용 보트로 접근하는 비경 포인트 펀다이빙.</p>
-    </div>
-    <div class="card">
-      <div class="card-icon">🌙</div>
-      <h3>야간 다이빙</h3>
-      <p>어둠 속 빛나는 야광생물과 함께하는 특별한 나이트 다이빙.</p>
-    </div>
-    <div class="card">
-      <div class="card-icon">📷</div>
-      <h3>수중 촬영</h3>
-      <p>전문 수중 카메라로 소중한 순간을 영상으로 담아드립니다.</p>
-    </div>
-    <div class="card">
-      <div class="card-icon">🏕</div>
-      <h3>숙박 패키지</h3>
-      <p>다이빙 + 숙박 결합 패키지로 더욱 알차게 즐기세요.</p>
-    </div>
-  </div>
-</section>
+<!-- ─── ABOUT ─────────────────────────────────────────── -->
+<section id="about" class="py-24 bg-background">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
 
-<!-- COURSES -->
-<section id="courses">
-  <span class="section-tag">Courses</span>
-  <h2 class="section-title">교육 코스</h2>
-  <p class="section-desc">PADI 공식 커리큘럼에 따른 단계별 다이버 교육 과정입니다.</p>
-  <div class="course-grid">
-    <div class="course-card">
-      <div class="course-thumb thumb-beginner">🌊</div>
-      <div class="course-body">
-        <span class="badge badge-b">입문</span>
-        <h3>스쿠버다이빙 체험</h3>
-        <p>이론 강습 1시간 + 얕은 수심 체험. 자격증 불필요, 장비 일체 포함.</p>
-        <div class="course-meta">
-          <div class="price">₩89,000 <span>/ 1인</span></div>
-          <div class="course-duration">반나절</div>
+      <!-- Image side -->
+      <div class="relative order-2 md:order-1">
+        <div class="aspect-[4/3] rounded-3xl overflow-hidden bg-ocean-800 shadow-card-hover">
+          <img
+            src="https://images.unsplash.com/photo-1559827291-72ee739d0d9a?w=900&q=80"
+            alt="다이버들이 바닷속을 탐험하는 모습"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <!-- Floating badge -->
+        <div class="absolute -bottom-4 -right-4 bg-card rounded-2xl shadow-card p-4 flex items-center gap-3 border border-border">
+          <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+            <i data-lucide="shield-check" class="w-5 h-5 text-primary"></i>
+          </div>
+          <div>
+            <div class="text-xs text-muted-foreground">안전 인증</div>
+            <div class="text-sm font-bold text-foreground">PADI 공인센터</div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="course-card">
-      <div class="course-thumb thumb-beginner">🐠</div>
-      <div class="course-body">
-        <span class="badge badge-b">초급</span>
-        <h3>PADI 오픈워터</h3>
-        <p>이론·풀 실습·오픈워터 4회 다이빙 포함. 국제 자격증 발급.</p>
-        <div class="course-meta">
-          <div class="price">₩380,000 <span>/ 1인</span></div>
-          <div class="course-duration">2~3일</div>
+
+      <!-- Text side -->
+      <div class="order-1 md:order-2">
+        <div class="badge bg-primary/10 text-primary mb-4">
+          <i data-lucide="anchor" class="w-3 h-3"></i>
+          About OK DIVE
         </div>
-      </div>
-    </div>
-    <div class="course-card">
-      <div class="course-thumb thumb-advanced">🐡</div>
-      <div class="course-body">
-        <span class="badge badge-a">중급</span>
-        <h3>PADI 어드밴스드</h3>
-        <p>딥다이빙·수중항법 등 5가지 어드벤처 다이브 포함.</p>
-        <div class="course-meta">
-          <div class="price">₩420,000 <span>/ 1인</span></div>
-          <div class="course-duration">2일</div>
-        </div>
-      </div>
-    </div>
-    <div class="course-card">
-      <div class="course-thumb thumb-fun">🚤</div>
-      <div class="course-body">
-        <span class="badge badge-f">펀다이빙</span>
-        <h3>보트 펀다이빙</h3>
-        <p>오픈워터 이상 보유자. 보트로 이동하는 프리미엄 포인트 2탱크.</p>
-        <div class="course-meta">
-          <div class="price">₩120,000 <span>/ 2탱크</span></div>
-          <div class="course-duration">오전 반나절</div>
-        </div>
-      </div>
-    </div>
-    <div class="course-card">
-      <div class="course-thumb thumb-pro">🦈</div>
-      <div class="course-body">
-        <span class="badge badge-p">전문</span>
-        <h3>PADI 레스큐 다이버</h3>
-        <p>자기 관리 및 타 다이버 구조 기술 습득. 다이브마스터 전 필수.</p>
-        <div class="course-meta">
-          <div class="price">₩520,000 <span>/ 1인</span></div>
-          <div class="course-duration">3일</div>
-        </div>
-      </div>
-    </div>
-    <div class="course-card">
-      <div class="course-thumb thumb-pro">🏆</div>
-      <div class="course-body">
-        <span class="badge badge-p">프로</span>
-        <h3>PADI 다이브마스터</h3>
-        <p>전문 다이버의 첫 걸음. 다이빙 가이드 및 강습 보조 자격.</p>
-        <div class="course-meta">
-          <div class="price">별도 문의</div>
-          <div class="course-duration">장기 과정</div>
+        <h2 class="text-3xl md:text-4xl font-black text-foreground mb-4 leading-tight">
+          동해 바다의 진짜 매력을<br>가장 안전하게
+        </h2>
+        <p class="text-muted-foreground leading-relaxed mb-8">
+          OK다이브는 강원 고성 천진해변에 위치한 PADI 공인 다이브센터입니다. 전용 보트, 숙박 시설, 공용 주방까지 갖춰 당일치기부터 다박 체류까지 모두 가능합니다.
+        </p>
+
+        <!-- Feature grid -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="flex items-center gap-3 p-3 rounded-xl bg-muted">
+            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+              <i data-lucide="award" class="w-4 h-4 text-primary"></i>
+            </div>
+            <span class="text-sm font-medium">PADI 공인 강사</span>
+          </div>
+          <div class="flex items-center gap-3 p-3 rounded-xl bg-muted">
+            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+              <i data-lucide="ship" class="w-4 h-4 text-primary"></i>
+            </div>
+            <span class="text-sm font-medium">전용 다이빙 보트</span>
+          </div>
+          <div class="flex items-center gap-3 p-3 rounded-xl bg-muted">
+            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+              <i data-lucide="bed-double" class="w-4 h-4 text-primary"></i>
+            </div>
+            <span class="text-sm font-medium">숙박 가능 (2층)</span>
+          </div>
+          <div class="flex items-center gap-3 p-3 rounded-xl bg-muted">
+            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+              <i data-lucide="utensils" class="w-4 h-4 text-primary"></i>
+            </div>
+            <span class="text-sm font-medium">공용 주방 완비</span>
+          </div>
+          <div class="flex items-center gap-3 p-3 rounded-xl bg-muted">
+            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+              <i data-lucide="shower-head" class="w-4 h-4 text-primary"></i>
+            </div>
+            <span class="text-sm font-medium">샤워·탈의 시설</span>
+          </div>
+          <div class="flex items-center gap-3 p-3 rounded-xl bg-muted">
+            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+              <i data-lucide="wrench" class="w-4 h-4 text-primary"></i>
+            </div>
+            <span class="text-sm font-medium">장비 렌탈·정비</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- POINTS -->
-<section id="points">
-  <span class="section-tag" style="color:var(--teal)">Dive Points</span>
-  <h2 class="section-title">주요 다이빙 포인트</h2>
-  <p class="section-desc">천진해변 인근의 다양한 수중 지형을 탐험하세요.</p>
-  <div class="points-grid">
-    <div class="point-card">
-      <div class="point-icon">🪸</div>
-      <h3>천진 암초대</h3>
-      <p>수심 5~18m, 다양한 암초와 해조류. 오픈워터 교육 최적 포인트.</p>
+
+<!-- ─── SERVICES ─────────────────────────────────────── -->
+<section id="services" class="py-24 bg-muted/50">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <div class="text-center mb-12">
+      <div class="badge bg-primary/10 text-primary mb-4 mx-auto">
+        <i data-lucide="layout-grid" class="w-3 h-3"></i>
+        Services
+      </div>
+      <h2 class="text-3xl md:text-4xl font-black text-foreground mb-3">제공 서비스</h2>
+      <p class="text-muted-foreground max-w-lg mx-auto">입문자부터 전문 다이버까지, 모든 레벨을 위한 프로그램</p>
     </div>
-    <div class="point-card">
-      <div class="point-icon">🏛</div>
-      <h3>수중 구조물</h3>
-      <p>어초 투하 구역. 다양한 어종이 서식하는 동해 최고의 펀다이빙 포인트.</p>
-    </div>
-    <div class="point-card">
-      <div class="point-icon">🌑</div>
-      <h3>야간 포인트</h3>
-      <p>해가 지면 빛나는 야광충과 문어, 오징어를 만날 수 있는 나이트 전용 포인트.</p>
-    </div>
-    <div class="point-card">
-      <div class="point-icon">🏔</div>
-      <h3>딥 포인트</h3>
-      <p>최대 수심 30m 이상의 어드밴스드 전용 포인트. 대형 어종 출몰 지역.</p>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+      <!-- Service card component -->
+      <div class="card-lift bg-card rounded-2xl p-6 border border-border shadow-card">
+        <div class="w-11 h-11 rounded-xl bg-ocean-100 flex items-center justify-center mb-4">
+          <i data-lucide="wave" class="w-5 h-5 text-ocean-600"></i>
+        </div>
+        <h3 class="font-bold text-foreground mb-1.5">체험 다이빙</h3>
+        <p class="text-sm text-muted-foreground">수영 실력 무관. PADI 강사와 1:1로 동해 바다 속을 안전하게 탐험합니다.</p>
+      </div>
+
+      <div class="card-lift bg-card rounded-2xl p-6 border border-border shadow-card">
+        <div class="w-11 h-11 rounded-xl bg-ocean-100 flex items-center justify-center mb-4">
+          <i data-lucide="graduation-cap" class="w-5 h-5 text-ocean-600"></i>
+        </div>
+        <h3 class="font-bold text-foreground mb-1.5">자격증 과정</h3>
+        <p class="text-sm text-muted-foreground">오픈워터부터 다이브마스터까지 PADI 공인 커리큘럼으로 체계적으로 교육합니다.</p>
+      </div>
+
+      <div class="card-lift bg-card rounded-2xl p-6 border border-border shadow-card">
+        <div class="w-11 h-11 rounded-xl bg-ocean-100 flex items-center justify-center mb-4">
+          <i data-lucide="ship" class="w-5 h-5 text-ocean-600"></i>
+        </div>
+        <h3 class="font-bold text-foreground mb-1.5">보트 다이빙</h3>
+        <p class="text-sm text-muted-foreground">12인승 전용 보트로 쇼어에서 접근 불가한 프리미엄 포인트를 탐험합니다.</p>
+      </div>
+
+      <div class="card-lift bg-card rounded-2xl p-6 border border-border shadow-card">
+        <div class="w-11 h-11 rounded-xl bg-ocean-100 flex items-center justify-center mb-4">
+          <i data-lucide="moon" class="w-5 h-5 text-ocean-600"></i>
+        </div>
+        <h3 class="font-bold text-foreground mb-1.5">야간 다이빙</h3>
+        <p class="text-sm text-muted-foreground">어둠 속 빛나는 야광생물과 문어, 오징어를 만나는 특별한 나이트 다이빙.</p>
+      </div>
+
+      <div class="card-lift bg-card rounded-2xl p-6 border border-border shadow-card">
+        <div class="w-11 h-11 rounded-xl bg-ocean-100 flex items-center justify-center mb-4">
+          <i data-lucide="camera" class="w-5 h-5 text-ocean-600"></i>
+        </div>
+        <h3 class="font-bold text-foreground mb-1.5">수중 촬영</h3>
+        <p class="text-sm text-muted-foreground">전문 수중 카메라로 소중한 바닷속 순간을 사진·영상으로 담아드립니다.</p>
+      </div>
+
+      <div class="card-lift bg-card rounded-2xl p-6 border border-border shadow-card">
+        <div class="w-11 h-11 rounded-xl bg-ocean-100 flex items-center justify-center mb-4">
+          <i data-lucide="tent" class="w-5 h-5 text-ocean-600"></i>
+        </div>
+        <h3 class="font-bold text-foreground mb-1.5">숙박 패키지</h3>
+        <p class="text-sm text-muted-foreground">다이빙 + 숙박 결합 패키지. 2층 객실에서 동해 바다 뷰를 즐기며 쉬어가세요.</p>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- GALLERY -->
-<section id="gallery">
-  <span class="section-tag">Gallery</span>
-  <h2 class="section-title">OK다이브 갤러리</h2>
-  <p class="section-desc">다이버들이 직접 담아온 동해의 수중 세계</p>
-  <div class="gallery-grid">
-    <div class="g-item tall">🐙</div>
-    <div class="g-item">🐟</div>
-    <div class="g-item">🦀</div>
-    <div class="g-item wide">🪸</div>
-    <div class="g-item">🦑</div>
-    <div class="g-item">🐚</div>
+
+<!-- ─── COURSES ──────────────────────────────────────── -->
+<section id="courses" class="py-24 bg-background">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <div class="text-center mb-12">
+      <div class="badge bg-primary/10 text-primary mb-4 mx-auto">
+        <i data-lucide="book-open" class="w-3 h-3"></i>
+        Courses
+      </div>
+      <h2 class="text-3xl md:text-4xl font-black text-foreground mb-3">교육 코스</h2>
+      <p class="text-muted-foreground max-w-lg mx-auto">PADI 공식 커리큘럼에 따른 단계별 다이버 교육 과정</p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+      <!-- Course card: 체험 -->
+      <div class="card-lift bg-card rounded-2xl overflow-hidden border border-border shadow-card">
+        <div class="h-3 bg-gradient-to-r from-sky-400 to-cyan-400"></div>
+        <div class="p-6">
+          <span class="badge bg-sky-100 text-sky-700 mb-3">입문</span>
+          <h3 class="font-bold text-foreground text-lg mb-1">스쿠버다이빙 체험</h3>
+          <p class="text-sm text-muted-foreground mb-4">이론 1시간 + 얕은 수심 체험. 자격증 불필요, 장비 일체 포함.</p>
+          <hr class="divider mb-4" />
+          <ul class="space-y-2 mb-5 text-sm text-muted-foreground">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-500 shrink-0"></i>장비 일체 대여 포함</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-500 shrink-0"></i>PADI 강사 1:1 동행</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-500 shrink-0"></i>수영 불가 OK</li>
+          </ul>
+          <div class="flex items-end justify-between">
+            <div>
+              <div class="text-2xl font-black text-primary">₩89,000</div>
+              <div class="text-xs text-muted-foreground">/ 1인 · 반나절</div>
+            </div>
+            <a href="#contact" class="inline-flex items-center gap-1 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-ocean-600 transition-colors">
+              신청 <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Course card: 오픈워터 -->
+      <div class="card-lift bg-card rounded-2xl overflow-hidden border border-border shadow-card">
+        <div class="h-3 bg-gradient-to-r from-teal-400 to-emerald-400"></div>
+        <div class="p-6">
+          <span class="badge bg-teal-100 text-teal-700 mb-3">초급</span>
+          <h3 class="font-bold text-foreground text-lg mb-1">PADI 오픈워터</h3>
+          <p class="text-sm text-muted-foreground mb-4">이론·풀 실습·오픈워터 4회 다이빙 포함. 국제 자격증 발급.</p>
+          <hr class="divider mb-4" />
+          <ul class="space-y-2 mb-5 text-sm text-muted-foreground">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-500 shrink-0"></i>PADI 국제 자격증</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-500 shrink-0"></i>이론 + 풀 + 오픈워터</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-500 shrink-0"></i>장비 렌탈 포함</li>
+          </ul>
+          <div class="flex items-end justify-between">
+            <div>
+              <div class="text-2xl font-black text-primary">₩380,000</div>
+              <div class="text-xs text-muted-foreground">/ 1인 · 2~3일</div>
+            </div>
+            <a href="#contact" class="inline-flex items-center gap-1 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-ocean-600 transition-colors">
+              신청 <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Course card: 어드밴스드 -->
+      <div class="card-lift bg-card rounded-2xl overflow-hidden border border-border shadow-card">
+        <div class="h-3 bg-gradient-to-r from-violet-400 to-purple-500"></div>
+        <div class="p-6">
+          <span class="badge bg-violet-100 text-violet-700 mb-3">중급</span>
+          <h3 class="font-bold text-foreground text-lg mb-1">PADI 어드밴스드</h3>
+          <p class="text-sm text-muted-foreground mb-4">딥다이빙·항법 등 5가지 어드벤처 다이브 포함.</p>
+          <hr class="divider mb-4" />
+          <ul class="space-y-2 mb-5 text-sm text-muted-foreground">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-500 shrink-0"></i>딥 · 항법 필수 포함</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-500 shrink-0"></i>5가지 스페셜티</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-500 shrink-0"></i>최대 수심 30m</li>
+          </ul>
+          <div class="flex items-end justify-between">
+            <div>
+              <div class="text-2xl font-black text-primary">₩420,000</div>
+              <div class="text-xs text-muted-foreground">/ 1인 · 2일</div>
+            </div>
+            <a href="#contact" class="inline-flex items-center gap-1 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-ocean-600 transition-colors">
+              신청 <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Course card: 펀다이빙 -->
+      <div class="card-lift bg-card rounded-2xl overflow-hidden border border-border shadow-card">
+        <div class="h-3 bg-gradient-to-r from-amber-400 to-orange-400"></div>
+        <div class="p-6">
+          <span class="badge bg-amber-100 text-amber-700 mb-3">펀다이빙</span>
+          <h3 class="font-bold text-foreground text-lg mb-1">보트 펀다이빙</h3>
+          <p class="text-sm text-muted-foreground mb-4">오픈워터 이상 보유자. 전용 보트로 이동하는 2탱크 펀다이빙.</p>
+          <hr class="divider mb-4" />
+          <ul class="space-y-2 mb-5 text-sm text-muted-foreground">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-500 shrink-0"></i>보트 이동 포함</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-500 shrink-0"></i>2탱크 다이빙</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-500 shrink-0"></i>오전 반나절 운영</li>
+          </ul>
+          <div class="flex items-end justify-between">
+            <div>
+              <div class="text-2xl font-black text-primary">₩120,000</div>
+              <div class="text-xs text-muted-foreground">/ 1인 · 2탱크</div>
+            </div>
+            <a href="#contact" class="inline-flex items-center gap-1 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-ocean-600 transition-colors">
+              신청 <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Course card: 레스큐 -->
+      <div class="card-lift bg-card rounded-2xl overflow-hidden border border-border shadow-card">
+        <div class="h-3 bg-gradient-to-r from-rose-400 to-pink-500"></div>
+        <div class="p-6">
+          <span class="badge bg-rose-100 text-rose-700 mb-3">전문</span>
+          <h3 class="font-bold text-foreground text-lg mb-1">PADI 레스큐 다이버</h3>
+          <p class="text-sm text-muted-foreground mb-4">자기 관리 및 타 다이버 구조 기술 습득. DM 전 필수 과정.</p>
+          <hr class="divider mb-4" />
+          <ul class="space-y-2 mb-5 text-sm text-muted-foreground">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-500 shrink-0"></i>응급 처치 포함</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-500 shrink-0"></i>구조 기술 실습</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-500 shrink-0"></i>DM 코스 연계</li>
+          </ul>
+          <div class="flex items-end justify-between">
+            <div>
+              <div class="text-2xl font-black text-primary">₩520,000</div>
+              <div class="text-xs text-muted-foreground">/ 1인 · 3일</div>
+            </div>
+            <a href="#contact" class="inline-flex items-center gap-1 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-ocean-600 transition-colors">
+              신청 <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Course card: DM -->
+      <div class="card-lift bg-card rounded-2xl overflow-hidden border border-primary/30 shadow-card bg-gradient-to-b from-primary/5 to-transparent">
+        <div class="h-3 bg-gradient-to-r from-primary to-ocean-400"></div>
+        <div class="p-6">
+          <span class="badge bg-primary/10 text-primary mb-3">프로</span>
+          <h3 class="font-bold text-foreground text-lg mb-1">PADI 다이브마스터</h3>
+          <p class="text-sm text-muted-foreground mb-4">전문 다이버의 첫 걸음. 가이드 및 강습 보조 자격 취득.</p>
+          <hr class="divider mb-4" />
+          <ul class="space-y-2 mb-5 text-sm text-muted-foreground">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-500 shrink-0"></i>프로페셔널 자격</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-500 shrink-0"></i>가이딩 실습</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-500 shrink-0"></i>장기 과정 (맞춤)</li>
+          </ul>
+          <div class="flex items-end justify-between">
+            <div>
+              <div class="text-xl font-black text-primary">별도 문의</div>
+              <div class="text-xs text-muted-foreground">/ 맞춤 상담</div>
+            </div>
+            <a href="#contact" class="inline-flex items-center gap-1 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-ocean-600 transition-colors">
+              문의 <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>
 
-<!-- REVIEWS -->
-<section id="reviews">
-  <span class="section-tag">Reviews</span>
-  <h2 class="section-title">수강생 후기</h2>
-  <p class="section-desc">OK다이브와 함께한 분들의 생생한 이야기</p>
-  <div class="review-grid">
-    <div class="review-card">
-      <div class="stars">★★★★★</div>
-      <p class="review-text">"서울에서 당일치기로 다녀왔는데 대만족! 강사님이 친절하게 설명해주셔서 물 공포증이 있는 저도 즐겁게 체험했어요."</p>
-      <div class="reviewer-info">
-        <div class="avatar">😊</div>
-        <div>
-          <div class="reviewer-name">김민지</div>
-          <div class="reviewer-course">체험 다이빙</div>
-        </div>
+
+<!-- ─── DIVE POINTS ──────────────────────────────────── -->
+<section id="points" class="py-24 bg-ocean-900 relative overflow-hidden">
+  <!-- BG texture -->
+  <div class="absolute inset-0 opacity-10"
+       style="background-image: radial-gradient(circle at 25% 60%, #38bdf8 0%, transparent 55%), radial-gradient(circle at 75% 20%, #2dd4bf 0%, transparent 50%)">
+  </div>
+
+  <div class="max-w-6xl mx-auto px-6 relative">
+    <div class="text-center mb-12">
+      <div class="badge bg-teal-500/15 border border-teal-500/30 text-teal-300 mb-4 mx-auto">
+        <i data-lucide="map-pin" class="w-3 h-3"></i>
+        Dive Points
       </div>
+      <h2 class="text-3xl md:text-4xl font-black text-white mb-3">주요 다이빙 포인트</h2>
+      <p class="text-white/55 max-w-lg mx-auto">천진해변 인근의 다양한 수중 지형을 탐험하세요</p>
     </div>
-    <div class="review-card">
-      <div class="stars">★★★★★</div>
-      <p class="review-text">"오픈워터 취득 완료! 2박 3일 동안 숙박하면서 강습받았는데 시설도 좋고 밥도 해먹을 수 있어서 편했어요. 보트도 크고 안전해요."</p>
-      <div class="reviewer-info">
-        <div class="avatar">🤿</div>
-        <div>
-          <div class="reviewer-name">이재현</div>
-          <div class="reviewer-course">PADI 오픈워터 수료</div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+      <div class="card-lift bg-white/6 border border-white/10 rounded-2xl p-5 text-white">
+        <div class="w-10 h-10 rounded-xl bg-teal-500/20 flex items-center justify-center mb-4">
+          <i data-lucide="mountain" class="w-5 h-5 text-teal-300"></i>
+        </div>
+        <h3 class="font-bold mb-1.5">천진 암초대</h3>
+        <p class="text-sm text-white/55 mb-3">수심 5~18m, 다양한 암초와 해조류. 오픈워터 교육 최적 포인트.</p>
+        <div class="flex items-center gap-1.5 text-xs text-teal-400 font-medium">
+          <i data-lucide="ruler" class="w-3.5 h-3.5"></i> 5 ~ 18m
         </div>
       </div>
-    </div>
-    <div class="review-card">
-      <div class="stars">★★★★☆</div>
-      <p class="review-text">"동해 시야가 이렇게 좋은지 몰랐어요. 펀다이빙 포인트가 다양하고 수중 생물이 풍부해서 매번 올 때마다 새로운 경험이에요."</p>
-      <div class="reviewer-info">
-        <div class="avatar">🌊</div>
-        <div>
-          <div class="reviewer-name">박수연</div>
-          <div class="reviewer-course">보트 펀다이빙</div>
+
+      <div class="card-lift bg-white/6 border border-white/10 rounded-2xl p-5 text-white">
+        <div class="w-10 h-10 rounded-xl bg-teal-500/20 flex items-center justify-center mb-4">
+          <i data-lucide="fish" class="w-5 h-5 text-teal-300"></i>
+        </div>
+        <h3 class="font-bold mb-1.5">어초 구역</h3>
+        <p class="text-sm text-white/55 mb-3">인공 어초 투하 구역. 다양한 어종이 서식하는 펀다이빙 명소.</p>
+        <div class="flex items-center gap-1.5 text-xs text-teal-400 font-medium">
+          <i data-lucide="ruler" class="w-3.5 h-3.5"></i> 10 ~ 22m
         </div>
       </div>
+
+      <div class="card-lift bg-white/6 border border-white/10 rounded-2xl p-5 text-white">
+        <div class="w-10 h-10 rounded-xl bg-teal-500/20 flex items-center justify-center mb-4">
+          <i data-lucide="moon-star" class="w-5 h-5 text-teal-300"></i>
+        </div>
+        <h3 class="font-bold mb-1.5">나이트 포인트</h3>
+        <p class="text-sm text-white/55 mb-3">야광충, 문어, 오징어를 만날 수 있는 야간 전용 포인트.</p>
+        <div class="flex items-center gap-1.5 text-xs text-teal-400 font-medium">
+          <i data-lucide="clock" class="w-3.5 h-3.5"></i> 일몰 후 운영
+        </div>
+      </div>
+
+      <div class="card-lift bg-white/6 border border-white/10 rounded-2xl p-5 text-white">
+        <div class="w-10 h-10 rounded-xl bg-teal-500/20 flex items-center justify-center mb-4">
+          <i data-lucide="chevrons-down" class="w-5 h-5 text-teal-300"></i>
+        </div>
+        <h3 class="font-bold mb-1.5">딥 포인트</h3>
+        <p class="text-sm text-white/55 mb-3">최대 수심 30m+ 어드밴스드 전용. 대형 어종 출몰 지역.</p>
+        <div class="flex items-center gap-1.5 text-xs text-teal-400 font-medium">
+          <i data-lucide="ruler" class="w-3.5 h-3.5"></i> 20 ~ 30m+
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- CTA -->
-<section id="cta">
-  <h2>지금 바로 예약하세요</h2>
-  <p>주말·성수기 예약 마감 빠릅니다. 온라인 예약 시 장비 대여 할인 혜택 제공.</p>
-  <div class="cta-btns">
-    <a href="#contact" class="btn btn-dark">예약 문의하기</a>
-    <a href="http://pf.kakao.com/_okdive" class="btn btn-white">카카오톡 채널</a>
-  </div>
-</section>
 
-<!-- CONTACT -->
-<section id="contact">
-  <span class="section-tag">Contact</span>
-  <h2 class="section-title">오시는 길 & 문의</h2>
-  <p class="section-desc">궁금한 점은 편하게 연락주세요. 빠르게 답변드리겠습니다.</p>
-  <div class="contact-wrap">
-    <div class="contact-info">
-      <h3>OK다이브 스쿠버다이빙</h3>
-      <div class="info-item">
-        <span class="info-icon">📍</span>
-        <div>
-          <div class="info-label">주소</div>
-          <div class="info-val">강원특별자치도 고성군 토성면 천진해변 일대<br><small style="color:rgba(255,255,255,0.4)">(서울 양양고속도로 이용 약 2시간)</small></div>
-        </div>
+<!-- ─── GALLERY ──────────────────────────────────────── -->
+<section id="gallery" class="py-24 bg-muted/50">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-12">
+      <div class="badge bg-primary/10 text-primary mb-4 mx-auto">
+        <i data-lucide="image" class="w-3 h-3"></i>
+        Gallery
       </div>
-      <div class="info-item">
-        <span class="info-icon">📞</span>
-        <div>
-          <div class="info-label">전화</div>
-          <div class="info-val">okdive.kr에서 확인</div>
-        </div>
-      </div>
-      <div class="info-item">
-        <span class="info-icon">🕘</span>
-        <div>
-          <div class="info-label">운영시간</div>
-          <div class="info-val">사전 예약제 운영 (연중 상담 가능)</div>
-        </div>
-      </div>
-      <div class="info-item">
-        <span class="info-icon">🚗</span>
-        <div>
-          <div class="info-label">교통</div>
-          <div class="info-val">서울 → 양양고속도로 → 속초IC → 천진해변<br>속초 고속버스터미널에서 택시 이용 가능</div>
-        </div>
-      </div>
-      <hr class="divider" />
-      <div class="sns-links">
-        <a href="https://www.instagram.com/okdive_skinscuba/" class="sns-btn">📸 인스타그램</a>
-        <a href="https://www.youtube.com/channel/UCYzpWxGY1sh_C1sk04ELm7A" class="sns-btn">▶ 유튜브</a>
-      </div>
+      <h2 class="text-3xl md:text-4xl font-black text-foreground mb-3">OK다이브 갤러리</h2>
+      <p class="text-muted-foreground">다이버들이 직접 담아온 동해의 수중 세계</p>
     </div>
-    <form>
-      <input type="text" placeholder="이름" />
-      <input type="tel" placeholder="연락처 (010-0000-0000)" />
-      <input type="date" />
-      <select>
-        <option value="">희망 코스 선택</option>
-        <option>스쿠버다이빙 체험</option>
-        <option>PADI 오픈워터</option>
-        <option>PADI 어드밴스드</option>
-        <option>보트 펀다이빙</option>
-        <option>PADI 레스큐 다이버</option>
-        <option>PADI 다이브마스터</option>
-        <option>야간 다이빙</option>
-        <option>기타 문의</option>
-      </select>
-      <select>
-        <option value="">인원 수</option>
-        <option>1명</option>
-        <option>2명</option>
-        <option>3~4명</option>
-        <option>5명 이상</option>
-      </select>
-      <textarea placeholder="문의 사항을 자유롭게 입력해주세요 (장비 보유 여부, 숙박 필요 여부 등)"></textarea>
-      <button type="submit" class="btn btn-primary" style="width:100%;font-size:1rem;">예약 신청하기</button>
-    </form>
+
+    <!-- Masonry-style grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 auto-rows-[180px]">
+      <div class="shimmer rounded-2xl md:row-span-2 flex items-center justify-center text-5xl">🐙</div>
+      <div class="shimmer rounded-2xl flex items-center justify-center text-5xl">🐟</div>
+      <div class="shimmer rounded-2xl flex items-center justify-center text-5xl">🦀</div>
+      <div class="shimmer rounded-2xl md:row-span-2 flex items-center justify-center text-5xl">🪸</div>
+      <div class="shimmer rounded-2xl md:col-span-2 flex items-center justify-center text-5xl">🦑</div>
+    </div>
+
+    <p class="text-center text-sm text-muted-foreground mt-4">
+      더 많은 사진은
+      <a href="https://www.instagram.com/okdive_skinscuba/" target="_blank" rel="noopener"
+         class="text-primary font-semibold hover:underline inline-flex items-center gap-1">
+        <i data-lucide="instagram" class="w-3.5 h-3.5"></i>
+        @okdive_skinscuba
+      </a>
+      에서 확인하세요
+    </p>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer>
-  <div class="f-logo">OK<span>DIVE</span></div>
-  <p>&copy; 2026 OK다이브 스쿠버다이빙. All rights reserved. | PADI Authorized Dive Center</p>
-  <p style="font-size:0.78rem;color:rgba(255,255,255,0.25)">가격 및 세부 정보는 실제 업체 정보로 업데이트 필요</p>
+
+<!-- ─── REVIEWS ──────────────────────────────────────── -->
+<section id="reviews" class="py-24 bg-background">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-12">
+      <div class="badge bg-primary/10 text-primary mb-4 mx-auto">
+        <i data-lucide="message-square" class="w-3 h-3"></i>
+        Reviews
+      </div>
+      <h2 class="text-3xl md:text-4xl font-black text-foreground mb-3">수강생 후기</h2>
+      <p class="text-muted-foreground">OK다이브와 함께한 분들의 생생한 이야기</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-5">
+
+      <div class="bg-card rounded-2xl p-6 border border-border shadow-card">
+        <div class="flex gap-0.5 text-amber-400 mb-3">
+          <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+        </div>
+        <p class="text-sm text-muted-foreground italic leading-relaxed mb-5">
+          "서울에서 당일치기로 다녀왔는데 대만족! 강사님이 친절하게 설명해주셔서 물 공포증이 있는 저도 즐겁게 체험했어요."
+        </p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
+            <i data-lucide="user" class="w-4 h-4 text-primary"></i>
+          </div>
+          <div>
+            <div class="text-sm font-bold text-foreground">김민지</div>
+            <div class="text-xs text-muted-foreground">체험 다이빙</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-card rounded-2xl p-6 border border-border shadow-card">
+        <div class="flex gap-0.5 text-amber-400 mb-3">
+          <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+        </div>
+        <p class="text-sm text-muted-foreground italic leading-relaxed mb-5">
+          "오픈워터 취득 완료! 2박 3일 숙박하면서 강습받았는데 시설도 좋고 밥도 해먹을 수 있어서 편했어요. 보트도 크고 안전해요."
+        </p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
+            <i data-lucide="user" class="w-4 h-4 text-primary"></i>
+          </div>
+          <div>
+            <div class="text-sm font-bold text-foreground">이재현</div>
+            <div class="text-xs text-muted-foreground">PADI 오픈워터 수료</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-card rounded-2xl p-6 border border-border shadow-card">
+        <div class="flex gap-0.5 text-amber-400 mb-3">
+          <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+          <i data-lucide="star" class="w-4 h-4 stroke-amber-300"></i>
+        </div>
+        <p class="text-sm text-muted-foreground italic leading-relaxed mb-5">
+          "동해 시야가 이렇게 좋은지 몰랐어요. 펀다이빙 포인트가 다양하고 수중 생물이 풍부해서 매번 올 때마다 새로운 경험이에요."
+        </p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
+            <i data-lucide="user" class="w-4 h-4 text-primary"></i>
+          </div>
+          <div>
+            <div class="text-sm font-bold text-foreground">박수연</div>
+            <div class="text-xs text-muted-foreground">보트 펀다이빙</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── CTA BANNER ───────────────────────────────────── -->
+<section class="py-20 bg-gradient-to-r from-primary to-ocean-400">
+  <div class="max-w-3xl mx-auto px-6 text-center">
+    <h2 class="text-3xl md:text-4xl font-black text-white mb-3">지금 바로 예약하세요</h2>
+    <p class="text-white/75 mb-8">주말·성수기 예약 빠르게 마감됩니다. 온라인 예약 시 장비 대여 할인 제공.</p>
+    <div class="flex flex-wrap justify-center gap-3">
+      <a href="#contact"
+         class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-primary font-bold hover:bg-ocean-100 transition-colors shadow-lg">
+        <i data-lucide="calendar-plus" class="w-4 h-4"></i>
+        예약 문의하기
+      </a>
+      <a href="https://www.instagram.com/okdive_skinscuba/" target="_blank" rel="noopener"
+         class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-white/40 hover:border-white/80 text-white font-semibold transition-colors">
+        <i data-lucide="instagram" class="w-4 h-4"></i>
+        인스타그램
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── CONTACT ──────────────────────────────────────── -->
+<section id="contact" class="py-24 bg-ocean-950">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <div class="text-center mb-12">
+      <div class="badge bg-teal-500/15 border border-teal-500/30 text-teal-300 mb-4 mx-auto">
+        <i data-lucide="mail" class="w-3 h-3"></i>
+        Contact
+      </div>
+      <h2 class="text-3xl md:text-4xl font-black text-white mb-3">오시는 길 & 문의</h2>
+      <p class="text-white/50 max-w-lg mx-auto">궁금한 점은 편하게 연락주세요. 빠르게 답변드리겠습니다.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-10 lg:gap-16 items-start">
+
+      <!-- Info -->
+      <div class="space-y-5">
+        <div class="flex gap-4">
+          <div class="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center shrink-0 mt-0.5">
+            <i data-lucide="map-pin" class="w-4 h-4 text-primary"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold tracking-widest text-teal-400 uppercase mb-0.5">주소</div>
+            <div class="text-white/80 text-sm leading-relaxed">강원특별자치도 고성군 토성면 천진해변 일대<br>
+              <span class="text-white/40 text-xs">서울 양양고속도로 이용 약 2시간</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-4">
+          <div class="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center shrink-0 mt-0.5">
+            <i data-lucide="phone" class="w-4 h-4 text-primary"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold tracking-widest text-teal-400 uppercase mb-0.5">전화</div>
+            <div class="text-white/80 text-sm">okdive.kr 에서 확인</div>
+          </div>
+        </div>
+
+        <div class="flex gap-4">
+          <div class="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center shrink-0 mt-0.5">
+            <i data-lucide="clock" class="w-4 h-4 text-primary"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold tracking-widest text-teal-400 uppercase mb-0.5">운영</div>
+            <div class="text-white/80 text-sm">사전 예약제 운영 (연중 상담 가능)</div>
+          </div>
+        </div>
+
+        <div class="flex gap-4">
+          <div class="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center shrink-0 mt-0.5">
+            <i data-lucide="car" class="w-4 h-4 text-primary"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold tracking-widest text-teal-400 uppercase mb-0.5">교통</div>
+            <div class="text-white/80 text-sm leading-relaxed">서울 → 양양고속도로 → 속초IC → 천진해변<br>
+              <span class="text-white/40 text-xs">속초 터미널에서 택시 이용 가능</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="border-white/10" />
+
+        <div class="flex gap-2 flex-wrap">
+          <a href="https://www.instagram.com/okdive_skinscuba/" target="_blank" rel="noopener"
+             class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/8 hover:bg-white/14 text-white/75 text-sm font-medium transition-colors border border-white/10">
+            <i data-lucide="instagram" class="w-4 h-4"></i> 인스타그램
+          </a>
+          <a href="https://www.youtube.com/channel/UCYzpWxGY1sh_C1sk04ELm7A" target="_blank" rel="noopener"
+             class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/8 hover:bg-white/14 text-white/75 text-sm font-medium transition-colors border border-white/10">
+            <i data-lucide="youtube" class="w-4 h-4"></i> 유튜브
+          </a>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <form class="space-y-3" onsubmit="return false">
+        <input
+          type="text" placeholder="이름"
+          class="w-full px-4 py-3 rounded-xl bg-white/7 border border-white/10 text-white placeholder-white/35 text-sm"
+        />
+        <input
+          type="tel" placeholder="연락처 (010-0000-0000)"
+          class="w-full px-4 py-3 rounded-xl bg-white/7 border border-white/10 text-white placeholder-white/35 text-sm"
+        />
+        <input
+          type="date"
+          class="w-full px-4 py-3 rounded-xl bg-white/7 border border-white/10 text-white/60 text-sm"
+          style="color-scheme: dark"
+        />
+        <select class="w-full px-4 py-3 rounded-xl bg-white/7 border border-white/10 text-white/75 text-sm appearance-none" style="background-color: #0c1f35">
+          <option value="" disabled selected>희망 코스 선택</option>
+          <option>스쿠버다이빙 체험</option>
+          <option>PADI 오픈워터</option>
+          <option>PADI 어드밴스드</option>
+          <option>보트 펀다이빙</option>
+          <option>PADI 레스큐 다이버</option>
+          <option>PADI 다이브마스터</option>
+          <option>야간 다이빙</option>
+          <option>기타 문의</option>
+        </select>
+        <select class="w-full px-4 py-3 rounded-xl bg-white/7 border border-white/10 text-white/75 text-sm appearance-none" style="background-color: #0c1f35">
+          <option value="" disabled selected>인원 수</option>
+          <option>1명</option>
+          <option>2명</option>
+          <option>3~4명</option>
+          <option>5명 이상</option>
+        </select>
+        <textarea
+          rows="4" placeholder="문의 내용 (장비 보유 여부, 숙박 필요 여부 등)"
+          class="w-full px-4 py-3 rounded-xl bg-white/7 border border-white/10 text-white placeholder-white/35 text-sm resize-none"
+        ></textarea>
+        <button
+          type="submit"
+          class="w-full py-3.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-ocean-950 font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-glow-teal">
+          <i data-lucide="send" class="w-4 h-4"></i>
+          예약 신청하기
+        </button>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ─── FOOTER ───────────────────────────────────────── -->
+<footer class="bg-black/60 border-t border-white/5 py-6 px-6">
+  <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/30">
+    <div class="flex items-center gap-2 font-black text-sm text-white/60">
+      <i data-lucide="waves" class="w-4 h-4 text-teal-500"></i>
+      OK<span class="text-teal-500">DIVE</span>
+    </div>
+    <p>&copy; 2026 OK다이브 스쿠버다이빙. All rights reserved. | PADI Authorized Dive Center</p>
+    <p class="text-white/20">가격·연락처는 실제 업체 정보로 업데이트 필요</p>
+  </div>
 </footer>
+
+
+<script>
+  // Init Lucide icons
+  lucide.createIcons();
+
+  // Nav scroll effect
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Mobile menu toggle
+  const menuBtn = document.getElementById('menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  menuBtn.addEventListener('click', () => {
+    const isHidden = mobileMenu.classList.toggle('hidden');
+    const icon = menuBtn.querySelector('[data-lucide]');
+    icon.setAttribute('data-lucide', isHidden ? 'menu' : 'x');
+    lucide.createIcons();
+  });
+
+  // Close mobile menu on link click
+  mobileMenu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+      menuBtn.querySelector('[data-lucide]').setAttribute('data-lucide', 'menu');
+      lucide.createIcons();
+    });
+  });
+</script>
 
 </body>
 </html>
